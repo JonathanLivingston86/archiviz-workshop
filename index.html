@@ -259,38 +259,88 @@ Forbidden: new objects, text, changes outside the selection.</pre><button class=
   <div class="in dense">
     <p class="eyebrow">03 · Texture PBR</p>
     <h2>Una superficie reagisce alla luce.</h2>
-    <p class="lead">PBR sta per rendering basato sulla fisica. Ogni materiale ha più mappe: colore, rugosità, rilievo. Muovi la luce.</p>
+    <p class="lead">PBR sta per rendering basato sulla fisica. Ogni materiale è fatto di più mappe: colore, rugosità, rilievo. Muovi la luce.</p>
     <div class="pbrbox"><canvas id="pbrcv" aria-label="Superficie con luce mobile"></canvas></div>
     <div class="tabs" id="pbrtabs"></div>
   </div>
   <div class="extra">
     <h4>Le mappe</h4>
-    <ul><li>Colore: l'aspetto del materiale senza luce.</li><li>Rugosità: dove è lucido e dove è opaco.</li><li>Rilievo: le piccole sporgenze e gli incavi, come le fughe tra le piastrelle.</li></ul>
-    <p>Il risultato è l'insieme delle mappe con una luce sopra. Muovi il mouse o il dito sull'immagine per cambiare la direzione.</p>
+    <ul><li>Colore (albedo): l'aspetto del materiale, senza luce né ombre.</li><li>Rugosità: dove è lucido e dove è opaco.</li><li>Rilievo (altezza o profondità): le piccole sporgenze e gli incavi, come le fughe tra le piastrelle.</li></ul>
+    <p>Il risultato è l'insieme delle mappe con una luce sopra. Muovi il mouse o il dito sull'immagine per cambiare la direzione della luce.</p>
   </div>
 </section>
 
-<!-- 19 · PBR PROMPT -->
-<section class="slide gray" data-title="Texture da un prompt">
-  <div class="in">
+<!-- 19 · PBR: DALLA FOTO ALL'ALBEDO -->
+<section class="slide gray" data-title="Dalla foto a una texture ripetibile">
+  <div class="in dense">
     <p class="eyebrow">03 · Texture PBR</p>
-    <h2>Texture da un prompt.</h2>
-    <div class="prompt has-tag"><span class="tag">Texture ripetibile</span><pre id="p-pbr">Seamless tileable texture of aged herringbone oak parquet, top-down view, flat even lighting.
-Mandatory: no perspective, no shadows, square 1:1, high detail, consistent scale.
-Forbidden: objects, text, vignette, visible seams.</pre><button class="copy" data-copy-from="p-pbr">Copia</button></div>
-    <ol class="rules mt">
-      <li>L'AI ti dà il colore. Rugosità e rilievo si ricavano dopo, con un programma di texture.</li>
-      <li>Ripeti la texture su una griglia 3 per 3: se si vede il raccordo, rigenera.</li>
-    </ol>
+    <h2>Dalla foto a una texture ripetibile.</h2>
+    <div class="cols2" style="grid-template-columns:1fr 1.05fr;align-items:start">
+      <div class="texcol">
+        <div class="pair2">
+          <figure><img src="assets/texture/parquet-foto.jpg" alt="Foto di un parquet a masselli"><figcaption>La foto di partenza</figcaption></figure>
+          <figure><div class="tile22" role="img" aria-label="La stessa foto ripetuta due volte per lato, con le giunte visibili"></div><figcaption>Ripetuta 2 per 2: si vede il raccordo</figcaption></figure>
+        </div>
+        <div class="row dlrow">
+          <a class="btn dl" href="assets/texture/parquet-foto.jpg" download="parquet-foto.jpg">Scarica la foto</a>
+          <span class="xs">Prova con VizMaker o con il tuo strumento. Foto: Kurt Kaiser, CC0.</span>
+        </div>
+      </div>
+      <div>
+        <div class="prompt has-tag"><span class="tag">Albedo ripetibile</span><pre id="p-pbr">Make this a seamless, tileable albedo texture.
+Mandatory: flat top-down view with no perspective, remove shadows, highlights and reflections, keep the wood pattern at its real scale, square 1:1, the left edge must continue into the right edge and the top into the bottom.
+Forbidden: new objects, text, borders, vignette, visible seams.</pre><button class="copy" data-copy-from="p-pbr">Copia</button></div>
+        <ol class="rules mt small-rules">
+          <li>Albedo vuol dire solo colore, senza luce e ombre dentro.</li>
+          <li>Ripeti il risultato 3 per 3 e guarda i bordi.</li>
+          <li>Se si vede una giunta, usa il prompt di correzione nella dispensa.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+  <div class="extra">
+    <h4>Prompt di correzione (se si vede il raccordo)</h4>
+    <div class="prompt has-tag" style="position:relative"><pre id="p-pbr2">Shift this texture by half its width and half its height, then repaint the visible cross in the center so the pattern is continuous.
+Mandatory: keep the same colors, wood scale and level of detail everywhere else.
+Forbidden: new objects, text, borders.</pre><button class="copy" data-copy-from="p-pbr2">Copia</button></div>
+    <h4 style="margin-top:1em">Perché funziona</h4>
+    <ul><li>Togliere luce e ombre (in inglese de-lighting) serve perché la luce la metterà poi il programma 3D: se è già dentro la foto, si somma due volte.</li><li>Una vista dall'alto, senza prospettiva, evita che il disegno si deformi quando la texture si ripete.</li><li>Il formato quadrato 1:1 rende la texture facile da ripetere in tutte e due le direzioni.</li></ul>
+    <p>La foto d'esempio è di Kurt Kaiser, rilasciata in pubblico dominio (CC0), da Wikimedia Commons.</p>
   </div>
 </section>
 
-<!-- 20 · MOODBOARD -->
+<!-- 20 · PBR: RUGOSITA E RILIEVO CON L'AI -->
+<section class="slide" data-title="Rugosità e rilievo con l'AI">
+  <div class="in dense">
+    <p class="eyebrow">03 · Texture PBR</p>
+    <h2>Rugosità e rilievo si chiedono all'AI.</h2>
+    <p class="lead">Dall'albedo, un modello di immagini disegna anche le altre mappe, in scala di grigi. Allega l'albedo a ogni richiesta.</p>
+    <div class="cols2">
+      <div class="prompt has-tag"><span class="tag">Mappa di rugosità</span><pre id="p-rough">Using the attached albedo texture, generate its roughness map.
+Mandatory: grayscale only, black is glossy and white is rough, same framing and size, aligned pixel by pixel with the albedo, seamless.
+Forbidden: color, shadows, text, borders.</pre><button class="copy" data-copy-from="p-rough">Copia</button></div>
+      <div class="prompt has-tag"><span class="tag">Mappa di rilievo (depth map)</span><pre id="p-height">Using the attached albedo texture, generate its height map (depth map).
+Mandatory: grayscale only, white is raised and black is recessed, same framing and size, aligned pixel by pixel with the albedo, seamless.
+Forbidden: color, perspective, shadows, text, borders.</pre><button class="copy" data-copy-from="p-height">Copia</button></div>
+    </div>
+    <p class="small">Sono mappe stimate dall'AI, non misurate: vanno bene per un render. Controlla che siano allineate all'albedo e che si ripetano senza giunte.</p>
+  </div>
+  <div class="extra">
+    <h4>Mappa normale (facoltativa)</h4>
+    <div class="prompt has-tag" style="position:relative"><pre id="p-normal">Using the attached albedo texture, generate its tangent-space normal map (blue-violet color coding, OpenGL convention).
+Mandatory: aligned pixel by pixel with the albedo, same size, seamless.
+Forbidden: shadows, text, borders.</pre><button class="copy" data-copy-from="p-normal">Copia</button></div>
+    <h4 style="margin-top:1em">Dove si usano</h4>
+    <p>Albedo, rugosità e rilievo si collegano al materiale nel programma 3D che usi (VizMaker o altro). Poi muovi la luce, come nella slide precedente, e controlla che il materiale reagisca bene.</p>
+  </div>
+</section>
+
+<!-- 21 · MOODBOARD -->
 <section class="slide" data-title="Dalle immagini al linguaggio">
   <div class="in dense">
     <p class="eyebrow">04 · Moodboard</p>
     <h2>Dalle immagini al linguaggio.</h2>
-    <p class="lead">Scegli fino a cinque materiali. Il prompt si scrive da solo.</p>
+    <p class="lead">Scegli fino a cinque materiali: a destra nasce la descrizione dello stile. Copiala e incollala nel prompt della slide dopo, al posto di [STILE].</p>
     <div class="sw" id="moodsw"></div>
     <div class="cols2" style="grid-template-columns:1.1fr 1fr;align-items:stretch">
       <div class="board" id="moodboard"></div>
@@ -298,26 +348,27 @@ Forbidden: objects, text, vignette, visible seams.</pre><button class="copy" dat
     </div>
   </div>
   <div class="extra">
-    <h4>Perché serve</h4>
-    <p>Un moodboard mette d'accordo te, il cliente e il modello sullo stesso linguaggio. Parole precise e codici colore danno risultati più coerenti di aggettivi come bello o elegante.</p>
+    <h4>Come si usa</h4>
+    <ol><li>Tocca i materiali che ti piacciono: il testo a destra si compone da solo.</li><li>Premi Copia.</li><li>Nella slide dopo, incolla il testo nel prompt 2 al posto di [STILE] e allega la foto o il render della stanza.</li></ol>
+    <p>Se hai già una moodboard in forma di immagine, usa il prompt 1 della slide dopo: l'AI ricava il testo dall'immagine.</p>
   </div>
 </section>
 
-<!-- 21 · MOODBOARD PROMPT -->
+<!-- 22 · MOODBOARD PROMPT -->
 <section class="slide gray" data-title="Moodboard in due passaggi">
   <div class="in dense">
     <p class="eyebrow">04 · Moodboard</p>
     <h2>Moodboard in due passaggi.</h2>
     <div class="cols2">
-      <div class="prompt has-tag"><span class="tag">1 · Dalle immagini al testo</span><pre id="p-m1">Look at these reference images as a moodboard.
-Describe in English: the palette with hex codes, the main materials, the quality of light, and the mood in five keywords.
+      <div class="prompt has-tag"><span class="tag">1 · Dalla moodboard al testo</span><pre id="p-m1">Look at the attached image as a moodboard.
+Describe in English: the palette with hex codes, the main materials and finishes, the furniture and accessories (type, shape, material), the quality of light, and the mood in five keywords.
 Then write one reusable prompt that captures this style.
 Forbidden: generic words like beautiful or elegant.</pre><button class="copy" data-copy-from="p-m1">Copia</button></div>
-      <div class="prompt has-tag"><span class="tag">2 · Dal testo alle immagini</span><pre id="p-m2">Use this style description as the only reference: [PASTE THE DESCRIPTION].
-Generate an eye-level interior photograph of [ROOM], 28 mm, straight verticals.
-Mandatory: keep the palette and the materials.
-Forbidden: any color or material not in the description.</pre><button class="copy" data-copy-from="p-m2">Copia</button></div>
+      <div class="prompt has-tag"><span class="tag">2 · Dalla moodboard alla tua stanza</span><pre id="p-m2">Edit the attached image of the room, restyling it with this moodboard: [STILE].
+Mandatory: keep the geometry, the camera, the layout and the position of every element. Change only palette, materials, finishes, furniture style, accessories and the mood of the light.
+Forbidden: moving walls or openings, adding text, any color or material not in the moodboard.</pre><button class="copy" data-copy-from="p-m2">Copia</button></div>
     </div>
+    <p class="small">Nel prompt 2 allega la foto o il render della stanza da modificare. Al posto di [STILE] incolla il testo del passo 1 o della slide prima, oppure allega direttamente l'immagine della moodboard.</p>
   </div>
 </section>
 
@@ -371,81 +422,132 @@ Forbidden: new furniture, text, watermarks.</pre><button class="copy" data-copy-
   </div>
 </section>
 
-<!-- 25 · DA 2D A 3D -->
-<section class="slide gray" data-title="Dalla pianta al volume">
+<!-- 26 · AGENTIC 3D: DAL BRIEF AL MODELLO E DOWNLOAD -->
+<section class="slide dark" data-title="Agentic 3D: dal brief al modello">
   <div class="in dense">
-    <p class="eyebrow">07 · Da 2D a 3D</p>
-    <h2>Dalla pianta al volume.</h2>
-    <p class="lead">Trascina l'altezza. Un disegno piatto diventa uno spazio.</p>
-    <div class="panel"><svg id="extvis" class="vis" viewBox="0 0 640 330" role="img" aria-label="Una pianta che si trasforma in un modello 3D"></svg></div>
-    <div class="row" style="align-items:center;gap:max(12px,2cqw)"><span class="small">Pianta</span><input type="range" id="extrange" min="0" max="100" value="0" style="flex:1;accent-color:#0071e3"><span class="small">Modello 3D</span></div>
-  </div>
-  <div class="extra">
-    <h4>Nella pratica</h4>
-    <p>Da uno schizzo, da una pianta o da un'immagine si può arrivare a un modello 3D, da usare come base per nuovi render. Il punto di partenza decide la qualità: disegni puliti e quotati danno modelli affidabili.</p>
-  </div>
-</section>
-
-<!-- 26 · AGENTIC 3D -->
-<section class="slide dark" data-title="Un agente che modella con te">
-  <div class="in">
-    <p class="eyebrow">08 · Agentic 3D</p>
-    <h2>Un agente che modella con te.</h2>
-    <p class="lead">Gli dai un brief, una pianta o uno schizzo. Scrive la scheda del progetto, costruisce il modello in SketchUp e controlla le norme.</p>
-  </div>
-</section>
-
-<!-- 27 · AGENTIC FLUSSO -->
-<section class="slide" data-title="Come funziona" data-steps="5">
-  <div class="in dense">
-    <p class="eyebrow">08 · Agentic 3D</p>
-    <h2>Come funziona.</h2>
-    <div class="panel"><svg id="flowvis" class="vis" viewBox="0 0 900 300" role="img" aria-label="Flusso di Agentic 3D"></svg></div>
-    <p class="small">Premi la freccia per seguire il percorso.</p>
-  </div>
-  <div class="extra">
-    <h4>Il percorso</h4>
-    <ul><li>Brief, pianta (anche in DXF) o schizzo: il punto di partenza.</li><li>L'agente scrive la scheda del progetto in un formato semplice.</li><li>Il motore costruisce la scena e controlla geometria e norme.</li><li>SketchUp mostra il modello dal vivo e scrive un rapporto.</li><li>L'agente rilegge il rapporto e corregge.</li></ul>
-  </div>
-</section>
-
-<!-- 28 · BYOA -->
-<section class="slide gray" data-title="Porta il tuo agente">
-  <div class="in">
-    <p class="eyebrow">08 · Agentic 3D</p>
-    <h2>Porta il tuo agente.</h2>
-    <div class="cols3" style="margin-top:max(8px,1cqw)">
-      <div class="panel"><h3>BYOA</h3><p class="small mt">Bring Your Own Agent: porta il tuo agente. Funziona con quello che già usi, per esempio Claude, Codex, Gemini, Cursor, Copilot o OpenCode.</p></div>
-      <div class="panel"><h3>Norme dentro</h3><p class="small mt">Le regole italiane ed europee stanno dentro il motore, ciascuna con la sua fonte e l'articolo.</p></div>
-      <div class="panel"><h3>L'ultima parola</h3><p class="small mt">Il controllo aiuta. La firma e la responsabilità restano del tecnico abilitato.</p></div>
+    <div class="cols2 agcols">
+      <div class="agleft">
+        <p class="eyebrow">07 · Agentic 3D</p>
+        <h2>Dal brief al modello 3D.</h2>
+        <p class="lead">Descrivi la stanza a parole, oppure dagli una pianta o uno schizzo. L'agente costruisce il modello in SketchUp e controlla le norme.</p>
+        <p class="small">Per i render usa Blender: è gratuito e open source, cioè il suo codice è pubblico e lo usi senza pagare.</p>
+        <div class="prompt has-tag"><span class="tag">Oppure chiedi al tuo agente di installarlo</span><pre id="p-ag">Installa Agentic 3D. Scarica lo ZIP dell'ultima versione da https://github.com/JonathanLivingston86/agentic-3d/releases/latest, estrailo e segui il file componenti/INSTALLA.md. Alla fine lancia agentic3d verifica e dimmi il risultato in parole semplici.</pre><button class="copy" data-copy-from="p-ag">Copia</button></div>
+      </div>
+      <div class="dlbox">
+        <img class="qr" src="assets/qr-agentic3d.png" alt="Codice QR per scaricare Agentic 3D">
+        <p class="url">github.com/JonathanLivingston86/agentic-3d</p>
+        <ol class="rules small-rules">
+          <li>Scarica lo ZIP dall'ultima versione ed estrailo.</li>
+          <li>Windows: doppio clic su Installa.cmd. Mac: Installa.command.</li>
+          <li>Riavvia SketchUp e il tuo agente, poi scrivi /agentic3d.</li>
+        </ol>
+      </div>
     </div>
   </div>
   <div class="extra">
     <h4>Cosa serve</h4>
-    <p>Windows 10 o 11, oppure macOS 13 o successivo. SketchUp desktop 2021 o più recente. Un agente a tua scelta. Blender solo se vuoi i render.</p>
+    <p>Windows 10 o 11, oppure macOS 13 o successivo. SketchUp desktop 2021 o più recente. Un agente a tua scelta. Blender solo se vuoi i render. Non servono diritti di amministratore.</p>
+    <h4 style="margin-top:1em">Il primo lavoro</h4>
+    <p>Dopo il riavvio scrivi al tuo agente, per esempio: /agentic3d crea un nuovo lavoro "Prova" con un appartamento di esempio. In SketchUp scegli Estensioni, Agentic 3D, Collega modello e apri il file indicato dall'agente: da lì ogni modifica compare da sola.</p>
+    <p>Pagina del progetto e ultima versione: <a href="https://github.com/JonathanLivingston86/agentic-3d/releases/latest" target="_blank" rel="noopener">github.com/JonathanLivingston86/agentic-3d</a>.</p>
   </div>
 </section>
 
-<!-- 29 · AI ACT -->
-<section class="slide dark" data-title="Tre cose a cui forse non hai pensato" data-steps="3">
+<!-- 27 · AGENTIC 3D: COSA FA E A CHI SERVE -->
+<section class="slide" data-title="Cosa fa e a chi serve" data-steps="1">
   <div class="in dense">
-    <p class="eyebrow">09 · AI Act e dintorni</p>
-    <h2>Tre cose a cui forse non hai pensato.</h2>
-    <div class="cols3" style="align-items:stretch">
-      <div class="act" data-step="1"><span class="n">1</span><h3>Va detto al cliente.</h3><p>Dal 10 ottobre 2025, chi esercita una professione intellettuale in Italia deve spiegare al cliente, con parole semplici, quali sistemi di AI usa. Legge 132/2025, art. 13.</p><p class="q">Un render fatto con l'AI è solo uno strumento di supporto? Dove finisce il supporto?</p></div>
-      <div class="act" data-step="2"><span class="n">2</span><h3>Di chi è quel render?</h3><p>Il diritto d'autore protegge le opere dell'ingegno umano, anche se fatte con l'AI, purché siano il risultato del lavoro intellettuale dell'autore. Legge 132/2025, art. 25.</p><p class="q">Bastano due prompt? E cosa ha comprato il cliente che ha pagato?</p></div>
-      <div class="act" data-step="3"><span class="n">3</span><h3>Sembra vero? Allora dillo.</h3><p>Dal 2 agosto 2026 le immagini generate che somigliano a luoghi, oggetti o persone reali e sembrano autentiche vanno dichiarate. Per le opere creative l'obbligo è più leggero. AI Act, art. 50.</p><p class="q">Il render di un edificio non ancora costruito, in un luogo vero, è una finzione o un inganno?</p></div>
+    <p class="eyebrow">07 · Agentic 3D</p>
+    <h2>Cosa fa e a chi serve.</h2>
+    <div class="what">
+      <div class="wcol">
+        <h3>Gli dai</h3>
+        <div class="item"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="6" y="8" width="36" height="32" rx="6" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M13 18h22M13 25h22M13 32h13" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg><span>Una descrizione a parole</span></div>
+        <div class="item"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="6" y="8" width="36" height="32" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M24 8v13M6 27h14M30 27h12M24 33v7" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M20 27a6 6 0 0 1 4-6" fill="none" stroke="currentColor" stroke-width="1.8"/></svg><span>Una pianta in DXF</span></div>
+        <div class="item"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 36l13-20 19 9v11z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" stroke-dasharray="4 3"/><path d="M30 8l6 6-13 13-8 2 2-8z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/></svg><span>Uno schizzo o una foto</span></div>
+      </div>
+      <div class="wmid" aria-hidden="true"><svg viewBox="0 0 120 60"><path d="M6 30h90m-14-12l14 12-14 12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Agentic 3D</b></div>
+      <div class="wcol">
+        <h3>Ottieni</h3>
+        <div class="item"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 5l16 9v19L24 43 8 33V14z" fill="rgba(0,113,227,.12)" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><path d="M24 24l16-10M24 24L8 14M24 24v19" fill="none" stroke="currentColor" stroke-width="2.4"/></svg><span>Il modello 3D in SketchUp</span></div>
+        <div class="item"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="10" y="6" width="28" height="36" rx="5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M17 19l4 4 8-8M17 32h14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Il controllo delle norme</span></div>
+        <div class="item"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="6" y="10" width="36" height="28" rx="5" fill="none" stroke="currentColor" stroke-width="2.4"/><circle cx="17" cy="20" r="3.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M8 36l11-10 8 7 6-5 9 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/></svg><span>I render, con Blender</span></div>
+      </div>
+    </div>
+    <div class="who" data-step="1">
+      <h3>A chi serve</h3>
+      <div class="whorow">
+        <div class="panel"><p class="small">A chi non ha un modellatore 3D in studio.</p></div>
+        <div class="panel"><p class="small">A chi deve controllare altezze, superfici e porte senza rileggere i decreti.</p></div>
+        <div class="panel"><p class="small">A chi vuole arrivare al render da una pianta, senza ridisegnare tutto.</p></div>
+      </div>
+      <p class="small">Prova reale: un appartamento da pianta DXF a modello in SketchUp in 11 minuti.</p>
     </div>
   </div>
 </section>
 
-<!-- 30 · AI ACT CHIUSURA -->
-<section class="slide" data-title="Una slide non basta">
+<!-- 28 · AGENTIC 3D: FLUSSO -->
+<section class="slide gray" data-title="Come funziona" data-steps="5">
+  <div class="in dense">
+    <p class="eyebrow">07 · Agentic 3D</p>
+    <h2>Come funziona.</h2>
+    <div class="panel"><svg id="flowvis" class="vis" viewBox="0 0 960 340" role="img" aria-label="Flusso di Agentic 3D: dalla tua richiesta al modello"></svg></div>
+    <p class="lead flowcap" id="flowcap">Tu chiedi in italiano.</p>
+  </div>
+  <div class="extra">
+    <h4>Il percorso</h4>
+    <ul>
+      <li>Tu chiedi in italiano: un brief, una pianta o uno schizzo.</li>
+      <li>L'agente AI è quello che già usi (Claude, Codex, Gemini, Cursor, Copilot, OpenCode). La Skill è il manuale di mestiere che gli spiega come si modella un interno.</li>
+      <li>Il server MCP (Model Context Protocol) gli dà gli attrezzi: costruire, controllare, aggiornare.</li>
+      <li>Il motore scrive la scheda del progetto e la controlla con le regole e le norme (DM 5 luglio 1975, DM 236/1989).</li>
+      <li>Il modello compare dal vivo in SketchUp. Il file GLB si guarda su telefono e visori. Blender fa i render e una galleria che si aggiorna da sola.</li>
+      <li>SketchUp scrive un rapporto di controllo: l'agente lo rilegge e corregge.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 29 · AGENTIC 3D: AGENTE, NORME, FIRMA -->
+<section class="slide" data-title="Porta il tuo agente">
   <div class="in">
-    <p class="eyebrow">09 · AI Act e dintorni</p>
-    <h2>Una slide non basta per decidere.</h2>
-    <p class="lead">Le norme cambiano e hanno punti ancora da chiarire. Prima di scrivere una clausola nel tuo disciplinare d'incarico, controlla le fonti.</p>
-    <p class="lead mt" style="color:var(--ink);font-weight:600">L'AI non è uno scherzo. Se vuoi ragionarci sul tuo studio, scrivimi.</p>
+    <p class="eyebrow">07 · Agentic 3D</p>
+    <h2>Porta il tuo agente.</h2>
+    <div class="cols3" style="margin-top:max(8px,1cqw);align-items:stretch">
+      <div class="panel"><h3>Il tuo assistente AI</h3><p class="cardtxt mt">Non devi imparare un programma nuovo: usi l'assistente AI che hai già (Claude, Codex, Gemini, Cursor, Copilot, OpenCode). Agentic 3D gli dà gli strumenti per modellare. In inglese: BYOA, Bring Your Own Agent.</p></div>
+      <div class="panel"><h3>Le norme, con l'articolo</h3><p class="cardtxt mt">Mentre costruisce, il motore controlla il progetto. Una camera doppia sotto i 14 m² viene segnalata con l'articolo del DM 5 luglio 1975 (art. 2). Una porta interna con meno di 75 cm di luce, con il DM 236/1989 (art. 8).</p></div>
+      <div class="panel"><h3>La firma resta tua</h3><p class="cardtxt mt">Il controllo ti avvisa, non decide al posto tuo. La responsabilità del progetto resta del tecnico abilitato.</p></div>
+    </div>
+  </div>
+  <div class="extra">
+    <h4>Nota</h4>
+    <p>Le regole sono scritte in file di dati: ciascuna riporta la fonte, l'articolo e l'estratto del testo di legge. Se un dato manca, il controllo risponde "non verificabile" invece di inventare un esito.</p>
+  </div>
+</section>
+
+<!-- 30 · AI ACT: TRE DOMANDE -->
+<section class="slide dark" data-title="Tre domande prima di consegnare un render" data-steps="3">
+  <div class="in dense">
+    <p class="eyebrow">08 · AI Act e dintorni</p>
+    <h2>Tre domande prima di consegnare un render.</h2>
+    <div class="cols3" style="align-items:stretch">
+      <div class="act" data-step="1"><span class="n">AL CLIENTE</span><h3>L'hai detto?</h3><p>Dal 10 ottobre 2025, chi esercita una professione intellettuale deve informare il cliente, con parole chiare, sui sistemi di AI che usa. Legge 132/2025, art. 13.</p><p class="q">Consegni tre render fatti con l'AI. Nel tuo disciplinare d'incarico c'è scritto?</p><p class="do">Aggiungi una riga: «Per questo incarico uso strumenti di AI per i render. Le scelte di progetto e la verifica sono mie.»</p></div>
+      <div class="act" data-step="2"><span class="n">AL PUBBLICO</span><h3>Sembra una foto?</h3><p>Dal 2 agosto 2026, le immagini generate che somigliano a luoghi, oggetti o persone reali e sembrano autentiche vanno dichiarate come generate. Per le opere creative basta una segnalazione discreta. AI Act, art. 50.</p><p class="q">Il render di un edificio nuovo, nel suo contesto vero, finisce in una brochure. Chi lo guarda lo prende per una foto?</p><p class="do">Scrivi «Immagine generata con AI» sotto il render.</p></div>
+      <div class="act" data-step="3"><span class="n">DI CHI È</span><h3>Il render è tuo?</h3><p>Il diritto d'autore protegge le opere dell'ingegno umano, anche se fatte con l'AI, purché siano il risultato del lavoro intellettuale dell'autore. Legge 132/2025, art. 25.</p><p class="q">Un concorrente copia un render che hai fatto con un solo prompt. Puoi dimostrare che è tuo?</p><p class="do">Conserva schizzi, prompt, versioni e ritocchi: sono la prova del tuo lavoro.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 31 · AI ACT: COSA FARE DOMANI -->
+<section class="slide" data-title="Cosa puoi sistemare già domani">
+  <div class="in">
+    <p class="eyebrow">08 · AI Act e dintorni</p>
+    <h2>Cosa puoi sistemare già domani.</h2>
+    <ol class="rules mt">
+      <li>Aggiungi al disciplinare d'incarico una riga sull'uso dell'AI.</li>
+      <li>Scrivi «Immagine generata con AI» sotto i render che pubblichi.</li>
+      <li>Salva schizzi, prompt e versioni di ogni lavoro.</li>
+    </ol>
+    <p class="lead mt" style="color:var(--ink);font-weight:600">L'AI non è uno scherzo e le regole ci sono già. Se vuoi scrivere insieme la clausola o rivedere come lavora il tuo studio, scrivimi: ai.andrealucarelli.com.</p>
+    <p class="xs">Informazione generale, non parere legale. Le norme cambiano: le fonti sono nella dispensa.</p>
   </div>
   <div class="extra">
     <h4>Fonti consultate</h4>

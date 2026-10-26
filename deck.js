@@ -119,6 +119,7 @@ function show(i, st = 0) {
   s.classList.add('active');
   step = Math.max(0, Math.min(maxStep(s), st));
   applySteps(s, step);
+  onStep(s);
   $('#progress').style.width = ((cur + 1) / list.length * 100) + '%';
   if (mode === 'presenter') history.replaceState(null, '', '#' + (cur + 1));
   onEnter(s);
@@ -128,7 +129,6 @@ function onEnter(s) {
   if (s.id === 'quizEnd') updateQuizEnd();
   if (s.querySelector('#pbrcv')) pbr.start();
   if (s.querySelector('#cmp')) upscale.draw();
-  if (s.querySelector('#extvis')) ext.draw();
 }
 
 function next() {
@@ -161,7 +161,7 @@ function setMode(m) {
     slides.forEach(s => { s.classList.remove('active'); applySteps(s, maxStep(s)); });
     $$('[data-until]').forEach(e => { /* stato finale */ });
     history.replaceState(null, '', '#dispensa');
-    pbr.start(); upscale.draw(); ext.draw(); flow.set(5); onStepAll();
+    pbr.start(); upscale.draw(); flow.set(5); onStepAll();
   } else {
     show(Math.min(cur, visibleSlides().length - 1));
   }
@@ -195,8 +195,8 @@ async function copyText(btn, text) {
 const SHOTS = [
   { it: 'Campo totale', en: 'Establishing shot', f: 24, pos: [300, 352], dir: -90, kw: 'eye-level camera, 24-35 mm, wide interior, straight verticals', len: 250 },
   { it: 'Angolo architettonico', en: 'Two-point perspective', f: 28, pos: [64, 344], dir: -33, kw: 'corner camera position, 24-35 mm, two-point perspective, straight verticals', len: 270 },
-  { it: 'Attraverso una soglia', en: 'Framed shot', f: 35, pos: [640, 290], dir: 180, kw: 'doorway framing, 35 mm, layered depth, interior transition', len: 260 },
-  { it: 'Dall\'alto', en: 'High angle', f: 24, pos: [76, 66], dir: 33, kw: 'high camera position above eye level, tilted downward, 24-35 mm, furniture layout and proportions, even soft light', len: 250, note: 'camera in alto' },
+  { it: 'Attraverso una soglia', en: 'Framed shot', f: 35, pos: [640, 280], dir: 180, kw: 'doorway framing, 35 mm, layered depth, interior transition', len: 190 },
+  { it: 'Dall\'alto', en: 'High angle', f: 24, pos: [22, 22], dir: 33, kw: 'high camera position above eye level, tilted downward, 24-35 mm, furniture layout and proportions, even soft light', len: 280, note: 'camera in alto' },
   { it: 'Dettaglio architettonico', en: 'Close-up', f: 50, pos: [330, 300], dir: -90, kw: 'close-up detail, 50-85 mm, shallow depth, raking side light', len: 170 },
   { it: 'Macro materiale', en: 'Macro texture', f: 100, pos: [470, 146], dir: -90, kw: 'macro material, 85-100 mm macro, texture study, soft grazing light', len: 76 }
 ];
@@ -248,13 +248,13 @@ function initCamera() {
 
 /* ================= VISUAL: PBR ================= */
 const pbr = (() => {
-  let ready = false, raf = 0, mode = 3, lx = .35, ly = -.3, idle = true, W = 520, H = 320, cv, ctx, alb, hgt, rgh, nrm, running = false, t0 = 0;
+  let ready = false, raf = 0, mode = 3, lx = .35, ly = -.3, idle = true, W = 800, H = 250, cv, ctx, alb, hgt, rgh, nrm, running = false, t0 = 0;
   const rnd = (x, y, s) => { const n = Math.sin(x * 127.1 + y * 311.7 + s * 74.7) * 43758.5453; return n - Math.floor(n); };
   const vn = (x, y, s) => { const xi = Math.floor(x), yi = Math.floor(y), xf = x - xi, yf = y - yi, u = xf * xf * (3 - 2 * xf), v = yf * yf * (3 - 2 * yf); const a = rnd(xi, yi, s), b = rnd(xi + 1, yi, s), c = rnd(xi, yi + 1, s), d = rnd(xi + 1, yi + 1, s); return a + (b - a) * u + (c - a) * v + (a - b - c + d) * u * v; };
   function build() {
     cv = $('#pbrcv'); if (!cv) return; ctx = cv.getContext('2d'); cv.width = W; cv.height = H;
     alb = new Float32Array(W * H * 3); hgt = new Float32Array(W * H); rgh = new Float32Array(W * H); nrm = new Float32Array(W * H * 3);
-    const TW = 104, TH = 52, G = 5;
+    const TW = 128, TH = 62, G = 5;
     for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
       const row = Math.floor(y / TH), ox = (row % 2) * TW / 2, xx = x + ox, tx = Math.floor(xx / TW), lx_ = xx - tx * TW, ly_ = y - row * TH;
       const d = Math.min(lx_, TW - lx_, ly_, TH - ly_), inT = d >= G / 2, bev = Math.min(1, Math.max(0, (d - G / 2) / 7));
@@ -400,81 +400,66 @@ const upscale = (() => {
   return { draw };
 })();
 
-/* ================= VISUAL: DA PIANTA A VOLUME ================= */
-const ext = (() => {
-  let ready = false, el, range;
-  const S = 46, C = Math.cos(Math.PI / 6), SN = .5;
-  const boxes = [
-    { n: 'w', x0: 0, y0: 0, x1: 6, y1: .16, h: 2.7, c: '#f1efe9' },
-    { n: 'w', x0: 0, y0: 0, x1: .16, y1: 4, h: 2.7, c: '#f1efe9' },
-    { n: 'w', x0: 0, y0: 3.84, x1: 6, y1: 4, h: 2.7, c: '#f1efe9' },
-    { n: 'w', x0: 5.84, y0: 0, x1: 6, y1: 4, h: 2.7, c: '#f1efe9' },
-    { n: 'w', x0: 3.6, y0: 0, x1: 3.76, y1: 1.9, h: 2.7, c: '#f1efe9' },
-    { n: 'w', x0: 3.6, y0: 2.9, x1: 3.76, y1: 4, h: 2.7, c: '#f1efe9' },
-    { n: 'f', x0: .4, y0: 1.2, x1: 1.15, y1: 2.8, h: .8, c: '#8fb3a8' },
-    { n: 'f', x0: 1.8, y0: 1.3, x1: 2.8, y1: 2.2, h: .75, c: '#d9bf94' },
-    { n: 'f', x0: 4.3, y0: 2.4, x1: 5.7, y1: 3.7, h: .55, c: '#c47a5a' },
-    { n: 'f', x0: 4.2, y0: .2, x1: 5.7, y1: .7, h: 2, c: '#d9bf94' }
-  ];
-  const P = (x, y, z) => [320 + (x - y) * C * S - 40, 126 + (x + y) * SN * S - z * S];
-  const shade = (hex, k) => { const n = parseInt(hex.slice(1), 16); const f = v => Math.max(0, Math.min(255, Math.round(v * k))); return `rgb(${f(n >> 16)},${f((n >> 8) & 255)},${f(n & 255)})`; };
-  function draw() {
-    if (!ready) { el = $('#extvis'); range = $('#extrange'); if (!el) return; range.addEventListener('input', draw); ready = true; }
-    const t = range.value / 100; el.innerHTML = '';
-    const floor = [P(0, 0, 0), P(6, 0, 0), P(6, 4, 0), P(0, 4, 0)].map(p => p.join(',')).join(' ');
-    svg('polygon', { points: floor, fill: '#e6d9c3', stroke: '#c9b99b', 'stroke-width': 1 }, el);
-    for (let i = 1; i < 12; i++) { const a = P(i * .5, 0, 0), b = P(i * .5, 4, 0); svg('line', { x1: a[0], y1: a[1], x2: b[0], y2: b[1], stroke: '#d3c3a5', 'stroke-width': .6 }, el); }
-    for (let j = 1; j < 8; j++) { const a = P(0, j * .5, 0), b = P(6, j * .5, 0); svg('line', { x1: a[0], y1: a[1], x2: b[0], y2: b[1], stroke: '#d3c3a5', 'stroke-width': .6 }, el); }
-    [...boxes].sort((a, b) => (a.x1 + a.y1) - (b.x1 + b.y1)).forEach(bx => {
-      const z = bx.h * t;
-      const A = P(bx.x0, bx.y0, z), B = P(bx.x1, bx.y0, z), Cc = P(bx.x1, bx.y1, z), D = P(bx.x0, bx.y1, z);
-      const Bb = P(bx.x1, bx.y0, 0), Cb = P(bx.x1, bx.y1, 0), Db = P(bx.x0, bx.y1, 0);
-      const pts = a => a.map(p => p.join(',')).join(' ');
-      if (z > .001) {
-        svg('polygon', { points: pts([D, Cc, Cb, Db]), fill: shade(bx.c, .86) }, el);
-        svg('polygon', { points: pts([B, Cc, Cb, Bb]), fill: shade(bx.c, .7) }, el);
-      }
-      svg('polygon', { points: pts([A, B, Cc, D]), fill: shade(bx.c, 1), stroke: t < .02 ? '#1d1d1f' : 'rgba(0,0,0,.12)', 'stroke-width': t < .02 ? 2 : 1 }, el);
-    });
-  }
-  return { draw };
-})();
-
 /* ================= VISUAL: FLUSSO AGENTIC 3D ================= */
 const flow = (() => {
-  let built = false, nodes = [], arrows = [], loop;
-  const labels = [['Brief, pianta', 'o schizzo'], ['Scheda', 'del progetto'], ['Motore', 'geometria e norme'], ['SketchUp', 'modello dal vivo'], ['Rapporto', 'cosa è stato fatto']];
+  const CAP = [
+    'Tu chiedi in italiano.',
+    "L'agente AI è quello che già usi. La Skill è il manuale di mestiere che gli spiega come si modella un interno.",
+    'Il server MCP gli dà gli attrezzi per costruire, controllare e aggiornare.',
+    'Il motore scrive la scheda del progetto e la controlla con le norme (DM 1975, DM 236).',
+    'Il modello compare dal vivo in SketchUp. Il file GLB serve per telefono e visori, Blender fa i render.',
+    "SketchUp scrive un rapporto di controllo: l'agente lo rilegge e corregge."
+  ];
+  const C = {
+    ai: { f: '#eeedfc', s: '#5a4fd1', t: '#3a2fa8' },
+    ag: { f: '#e3f4ed', s: '#0f8a65', t: '#0b6a4e' },
+    pr: { f: '#fbede6', s: '#c4521f', t: '#8f3a14' },
+    me: { f: '#f5f5f7', s: '#a1a1a6', t: '#1d1d1f' }
+  };
+  function box(el, x, y, w, h, k, title, sub, step) {
+    const g = svg('g', step ? { 'data-step': step } : {}, el);
+    svg('rect', { x, y, width: w, height: h, rx: 16, fill: C[k].f, stroke: C[k].s, 'stroke-width': 1.6 }, g);
+    svg('text', { x: x + w / 2, y: y + h / 2 - 3, 'text-anchor': 'middle', style: `font-size:23px;font-weight:700;fill:${C[k].t}` }, g).textContent = title;
+    svg('text', { x: x + w / 2, y: y + h / 2 + 20, 'text-anchor': 'middle', style: `font-size:16px;fill:${C[k].s}` }, g).textContent = sub;
+    return g;
+  }
+  function arrow(el, d, step, dashed) {
+    const p = svg('path', Object.assign({ d, fill: 'none', stroke: dashed ? '#c4521f' : '#6e6e73', 'stroke-width': 2, 'marker-end': dashed ? 'url(#ahd)' : 'url(#ah)' }, dashed ? { 'stroke-dasharray': '7 6' } : {}, step ? { 'data-step': step } : {}), el);
+    return p;
+  }
   function build() {
     const el = $('#flowvis'); if (!el) return; el.innerHTML = '';
     const defs = svg('defs', {}, el);
-    const m = svg('marker', { id: 'ah', viewBox: '0 0 10 10', refX: 8, refY: 5, markerWidth: 7, markerHeight: 7, orient: 'auto-start-reverse' }, defs);
-    svg('path', { d: 'M0 0L10 5L0 10z', fill: '#0071e3' }, m);
-    const w = 150, gap = 37, y = 80, h = 92;
-    labels.forEach((l, i) => {
-      const x = 12 + i * (w + gap);
-      const g = svg('g', i === 0 ? { class: 'node' } : { 'data-step': i, class: 'node' }, el);
-      svg('rect', { x, y, width: w, height: h, rx: 18, fill: i === 0 ? '#f5f5f7' : '#fff', stroke: '#d2d2d7', 'stroke-width': 1.5 }, g);
-      svg('text', { x: x + w / 2, y: y + 40, 'text-anchor': 'middle', style: 'font-size:19px;font-weight:700;fill:#1d1d1f' }, g).textContent = l[0];
-      svg('text', { x: x + w / 2, y: y + 66, 'text-anchor': 'middle', style: 'font-size:13px;fill:#6e6e73' }, g).textContent = l[1];
-      svg('text', { x: x + 14, y: y - 12, style: 'font-size:13px;font-weight:700;fill:#0071e3' }, g).textContent = i + 1;
-      nodes.push(g);
-      if (i < labels.length - 1) {
-        const a = svg('line', { x1: x + w + 6, y1: y + h / 2, x2: x + w + gap - 6, y2: y + h / 2, stroke: '#0071e3', 'stroke-width': 2.5, 'marker-end': 'url(#ah)', 'data-step': i + 1 }, el);
-        arrows.push(a);
-      }
+    [['ah', '#6e6e73'], ['ahd', '#c4521f']].forEach(([id, col]) => {
+      const m = svg('marker', { id, viewBox: '0 0 10 10', refX: 8, refY: 5, markerWidth: 7, markerHeight: 7, orient: 'auto' }, defs);
+      svg('path', { d: 'M0 0L10 5L0 10z', fill: col }, m);
     });
-    // il tuo agente
-    const ag = svg('g', {}, el);
-    svg('rect', { x: 12, y: 8, width: 876, height: 34, rx: 17, fill: '#0071e3', opacity: .1 }, ag);
-    svg('text', { x: 450, y: 31, 'text-anchor': 'middle', style: 'font-size:15px;font-weight:600;fill:#0071e3' }, ag).textContent = 'Il tuo agente scrive, legge e corregge';
-    // anello di ritorno
-    loop = svg('path', { d: 'M 810 178 C 810 250, 270 250, 270 178', fill: 'none', stroke: '#0071e3', 'stroke-width': 2.2, 'stroke-dasharray': '6 6', 'marker-end': 'url(#ah)', 'data-step': 5 }, el);
-    svg('text', { x: 540, y: 262, 'text-anchor': 'middle', style: 'font-size:14px;fill:#0071e3;font-weight:600' }, el).setAttribute('data-step', 5);
-    el.lastChild.textContent = 'L\'agente rilegge il rapporto e corregge';
-    built = true;
+    // colonne: x = 20, 215, 410, 605, 800 (larghezza 140, passo 195)
+    box(el, 20, 125, 140, 80, 'me', 'Tu', 'chiedi in italiano');
+    box(el, 215, 125, 140, 80, 'ai', 'Agente AI', 'quello che già usi', 1);
+    box(el, 215, 20, 140, 64, 'ai', 'Skill', 'manuale di mestiere', 1);
+    box(el, 410, 125, 140, 80, 'ag', 'Server MCP', 'gli attrezzi', 2);
+    box(el, 605, 125, 140, 80, 'ag', 'Motore', 'scheda e controlli', 3);
+    box(el, 605, 20, 140, 64, 'ag', 'Regole e norme', 'DM 1975, DM 236', 3);
+    box(el, 800, 20, 140, 64, 'pr', 'File GLB', 'telefono e visori', 4);
+    box(el, 800, 125, 140, 80, 'pr', 'Blender', 'render e galleria', 4);
+    box(el, 800, 246, 140, 80, 'pr', 'SketchUp', 'modello dal vivo', 4);
+    arrow(el, 'M162 165 L211 165', 1);
+    arrow(el, 'M285 86 L285 121', 1);
+    arrow(el, 'M357 165 L406 165', 2);
+    arrow(el, 'M552 165 L601 165', 3);
+    arrow(el, 'M675 86 L675 121', 3);
+    // dal motore ai tre risultati
+    arrow(el, 'M747 150 L770 150 L770 52 L796 52', 4);
+    arrow(el, 'M747 165 L796 165', 4);
+    arrow(el, 'M747 180 L770 180 L770 286 L796 286', 4);
+    // il rapporto torna all'agente
+    arrow(el, 'M870 330 L870 338 L285 338 L285 209', 5, true);
+    const lab = svg('text', { x: 580, y: 330, 'text-anchor': 'middle', 'data-step': 5, style: 'font-size:17px;font-weight:600;fill:#c4521f' }, el);
+    lab.textContent = 'rapporto di controllo';
   }
-  function set() { /* gli step sono gestiti dal motore tramite data-step */ }
-  return { set, build };
+  function set(n) { const c = $('#flowcap'); if (c) c.textContent = CAP[Math.max(0, Math.min(CAP.length - 1, n))]; }
+  return { build, set };
 })();
 
 /* ================= AVVIO ================= */
@@ -529,6 +514,7 @@ function init() {
     else if (/^\d+$/.test(v)) { if (mode !== 'presenter') setMode('presenter'); if (+v - 1 !== cur) show(+v - 1); }
   });
   let hideT; document.addEventListener('mousemove', () => { body.classList.add('ui-on'); clearTimeout(hideT); hideT = setTimeout(() => body.classList.remove('ui-on'), 2200); });
+  window.__deck = { show, list: () => visibleSlides(), maxStep, setMode };
   // modalità iniziale
   const h = location.hash.replace('#', '');
   const small = window.innerWidth < 900;
