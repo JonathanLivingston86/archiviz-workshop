@@ -309,32 +309,6 @@ Forbidden: new objects, text, borders.</pre><button class="copy" data-copy-from=
   </div>
 </section>
 
-<!-- 20 · PBR: RUGOSITA E RILIEVO CON L'AI -->
-<section class="slide" data-title="Rugosità e rilievo con l'AI">
-  <div class="in dense">
-    <p class="eyebrow">03 · Texture PBR</p>
-    <h2>Rugosità e rilievo si chiedono all'AI.</h2>
-    <p class="lead">Dall'albedo, un modello di immagini disegna anche le altre mappe, in scala di grigi. Allega l'albedo a ogni richiesta.</p>
-    <div class="cols2">
-      <div class="prompt has-tag"><span class="tag">Mappa di rugosità</span><pre id="p-rough">Using the attached albedo texture, generate its roughness map.
-Mandatory: grayscale only, black is glossy and white is rough, same framing and size, aligned pixel by pixel with the albedo, seamless.
-Forbidden: color, shadows, text, borders.</pre><button class="copy" data-copy-from="p-rough">Copia</button></div>
-      <div class="prompt has-tag"><span class="tag">Mappa di rilievo (depth map)</span><pre id="p-height">Using the attached albedo texture, generate its height map (depth map).
-Mandatory: grayscale only, white is raised and black is recessed, same framing and size, aligned pixel by pixel with the albedo, seamless.
-Forbidden: color, perspective, shadows, text, borders.</pre><button class="copy" data-copy-from="p-height">Copia</button></div>
-    </div>
-    <p class="small">Sono mappe stimate dall'AI, non misurate: vanno bene per un render. Controlla che siano allineate all'albedo e che si ripetano senza giunte.</p>
-  </div>
-  <div class="extra">
-    <h4>Mappa normale (facoltativa)</h4>
-    <div class="prompt has-tag" style="position:relative"><pre id="p-normal">Using the attached albedo texture, generate its tangent-space normal map (blue-violet color coding, OpenGL convention).
-Mandatory: aligned pixel by pixel with the albedo, same size, seamless.
-Forbidden: shadows, text, borders.</pre><button class="copy" data-copy-from="p-normal">Copia</button></div>
-    <h4 style="margin-top:1em">Dove si usano</h4>
-    <p>Albedo, rugosità e rilievo si collegano al materiale nel programma 3D che usi (VizMaker o altro). Poi muovi la luce, come nella slide precedente, e controlla che il materiale reagisca bene.</p>
-  </div>
-</section>
-
 <!-- 21 · MOODBOARD -->
 <section class="slide" data-title="Dalle immagini al linguaggio">
   <div class="in dense">
@@ -350,7 +324,7 @@ Forbidden: shadows, text, borders.</pre><button class="copy" data-copy-from="p-n
   <div class="extra">
     <h4>Come si usa</h4>
     <ol><li>Tocca i materiali che ti piacciono: il testo a destra si compone da solo.</li><li>Premi Copia.</li><li>Nella slide dopo, incolla il testo nel prompt 2 al posto di [STILE] e allega la foto o il render della stanza.</li></ol>
-    <p>Se hai già una moodboard in forma di immagine, usa il prompt 1 della slide dopo: l'AI ricava il testo dall'immagine.</p>
+    <p>Se hai una foto di riferimento che ti piace, usa il prompt 1 della slide dopo: l'AI ne estrae la moodboard in forma di testo.</p>
   </div>
 </section>
 
@@ -360,15 +334,15 @@ Forbidden: shadows, text, borders.</pre><button class="copy" data-copy-from="p-n
     <p class="eyebrow">04 · Moodboard</p>
     <h2>Moodboard in due passaggi.</h2>
     <div class="cols2">
-      <div class="prompt has-tag"><span class="tag">1 · Dalla moodboard al testo</span><pre id="p-m1">Look at the attached image as a moodboard.
+      <div class="prompt has-tag"><span class="tag">1 · Estrai la moodboard da un'immagine</span><pre id="p-m1">Look at the attached image (a photo or render of an interior) and extract its moodboard.
 Describe in English: the palette with hex codes, the main materials and finishes, the furniture and accessories (type, shape, material), the quality of light, and the mood in five keywords.
 Then write one reusable prompt that captures this style.
-Forbidden: generic words like beautiful or elegant.</pre><button class="copy" data-copy-from="p-m1">Copia</button></div>
-      <div class="prompt has-tag"><span class="tag">2 · Dalla moodboard alla tua stanza</span><pre id="p-m2">Edit the attached image of the room, restyling it with this moodboard: [STILE].
+Forbidden: generic words like beautiful or elegant, and anything that is not visible in the image.</pre><button class="copy" data-copy-from="p-m1">Copia</button></div>
+      <div class="prompt has-tag"><span class="tag">2 · Applica la moodboard alla tua stanza</span><pre id="p-m2">Edit the attached image of the room, restyling it with this moodboard: [STILE].
 Mandatory: keep the geometry, the camera, the layout and the position of every element. Change only palette, materials, finishes, furniture style, accessories and the mood of the light.
 Forbidden: moving walls or openings, adding text, any color or material not in the moodboard.</pre><button class="copy" data-copy-from="p-m2">Copia</button></div>
     </div>
-    <p class="small">Nel prompt 2 allega la foto o il render della stanza da modificare. Al posto di [STILE] incolla il testo del passo 1 o della slide prima, oppure allega direttamente l'immagine della moodboard.</p>
+    <p class="small">Nel prompt 1 allega un'immagine di riferimento: ne esce la moodboard scritta. Nel prompt 2 allega la foto o il render della stanza da modificare e incolla la moodboard al posto di [STILE]. Va bene anche il testo della slide prima.</p>
   </div>
 </section>
 
@@ -490,7 +464,7 @@ Forbidden: new furniture, text, watermarks.</pre><button class="copy" data-copy-
   <div class="in dense">
     <p class="eyebrow">07 · Agentic 3D</p>
     <h2>Come funziona.</h2>
-    <div class="panel"><svg id="flowvis" class="vis" viewBox="0 0 960 340" role="img" aria-label="Flusso di Agentic 3D: dalla tua richiesta al modello"></svg></div>
+    <div class="panel"><svg id="flowvis" class="vis" viewBox="0 0 1000 392" role="img" aria-label="Flusso di Agentic 3D: dalla tua richiesta al modello"></svg></div>
     <p class="lead flowcap" id="flowcap">Tu chiedi in italiano.</p>
   </div>
   <div class="extra">

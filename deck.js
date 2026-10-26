@@ -248,7 +248,7 @@ function initCamera() {
 
 /* ================= VISUAL: PBR ================= */
 const pbr = (() => {
-  let ready = false, raf = 0, mode = 3, lx = .35, ly = -.3, idle = true, W = 800, H = 250, cv, ctx, alb, hgt, rgh, nrm, running = false, t0 = 0;
+  let ready = false, raf = 0, mode = 0, lx = .35, ly = -.3, idle = true, W = 800, H = 250, cv, ctx, alb, hgt, rgh, nrm, running = false, t0 = 0;
   const rnd = (x, y, s) => { const n = Math.sin(x * 127.1 + y * 311.7 + s * 74.7) * 43758.5453; return n - Math.floor(n); };
   const vn = (x, y, s) => { const xi = Math.floor(x), yi = Math.floor(y), xf = x - xi, yf = y - yi, u = xf * xf * (3 - 2 * xf), v = yf * yf * (3 - 2 * yf); const a = rnd(xi, yi, s), b = rnd(xi + 1, yi, s), c = rnd(xi, yi + 1, s), d = rnd(xi + 1, yi + 1, s); return a + (b - a) * u + (c - a) * v + (a - b - c + d) * u * v; };
   function build() {
@@ -275,7 +275,7 @@ const pbr = (() => {
     cv.addEventListener('pointerleave', () => { idle = true; });
     const tabs = $('#pbrtabs');
     ['Colore', 'Rugosità', 'Rilievo', 'Risultato'].forEach((n, i) => { const b = document.createElement('button'); b.className = 'tab'; b.textContent = n; b.onclick = () => { mode = i; $$('button', tabs).forEach((x, k) => x.setAttribute('aria-pressed', k === i)); }; tabs.appendChild(b); });
-    $$('button', tabs)[3].setAttribute('aria-pressed', 'true');
+    $$('button', tabs)[0].setAttribute('aria-pressed', 'true');
     ready = true;
   }
   function frame(t) {
@@ -416,16 +416,17 @@ const flow = (() => {
     pr: { f: '#fbede6', s: '#c4521f', t: '#8f3a14' },
     me: { f: '#f5f5f7', s: '#a1a1a6', t: '#1d1d1f' }
   };
-  function box(el, x, y, w, h, k, title, sub, step) {
-    const g = svg('g', step ? { 'data-step': step } : {}, el);
-    svg('rect', { x, y, width: w, height: h, rx: 16, fill: C[k].f, stroke: C[k].s, 'stroke-width': 1.6 }, g);
-    svg('text', { x: x + w / 2, y: y + h / 2 - 3, 'text-anchor': 'middle', style: `font-size:23px;font-weight:700;fill:${C[k].t}` }, g).textContent = title;
-    svg('text', { x: x + w / 2, y: y + h / 2 + 20, 'text-anchor': 'middle', style: `font-size:16px;fill:${C[k].s}` }, g).textContent = sub;
+  const BW = 166;                       // larghezza dei riquadri
+  const COL = i => 2 + i * 208;         // x della colonna i (5 colonne)
+  function box(el, col, y, h, k, title, sub, step) {
+    const x = COL(col), g = svg('g', step ? { 'data-step': step } : {}, el);
+    svg('rect', { x, y, width: BW, height: h, rx: 16, fill: C[k].f, stroke: C[k].s, 'stroke-width': 1.6 }, g);
+    svg('text', { x: x + BW / 2, y: y + h / 2 - 2, 'text-anchor': 'middle', style: `font-size:21px;font-weight:700;fill:${C[k].t}` }, g).textContent = title;
+    svg('text', { x: x + BW / 2, y: y + h / 2 + 20, 'text-anchor': 'middle', style: `font-size:14px;fill:${C[k].s}` }, g).textContent = sub;
     return g;
   }
   function arrow(el, d, step, dashed) {
-    const p = svg('path', Object.assign({ d, fill: 'none', stroke: dashed ? '#c4521f' : '#6e6e73', 'stroke-width': 2, 'marker-end': dashed ? 'url(#ahd)' : 'url(#ah)' }, dashed ? { 'stroke-dasharray': '7 6' } : {}, step ? { 'data-step': step } : {}), el);
-    return p;
+    return svg('path', Object.assign({ d, fill: 'none', stroke: dashed ? '#c4521f' : '#6e6e73', 'stroke-width': 2, 'marker-end': dashed ? 'url(#ahd)' : 'url(#ah)' }, dashed ? { 'stroke-dasharray': '7 6' } : {}, step ? { 'data-step': step } : {}), el);
   }
   function build() {
     const el = $('#flowvis'); if (!el) return; el.innerHTML = '';
@@ -434,29 +435,37 @@ const flow = (() => {
       const m = svg('marker', { id, viewBox: '0 0 10 10', refX: 8, refY: 5, markerWidth: 7, markerHeight: 7, orient: 'auto' }, defs);
       svg('path', { d: 'M0 0L10 5L0 10z', fill: col }, m);
     });
-    // colonne: x = 20, 215, 410, 605, 800 (larghezza 140, passo 195)
-    box(el, 20, 125, 140, 80, 'me', 'Tu', 'chiedi in italiano');
-    box(el, 215, 125, 140, 80, 'ai', 'Agente AI', 'quello che già usi', 1);
-    box(el, 215, 20, 140, 64, 'ai', 'Skill', 'manuale di mestiere', 1);
-    box(el, 410, 125, 140, 80, 'ag', 'Server MCP', 'gli attrezzi', 2);
-    box(el, 605, 125, 140, 80, 'ag', 'Motore', 'scheda e controlli', 3);
-    box(el, 605, 20, 140, 64, 'ag', 'Regole e norme', 'DM 1975, DM 236', 3);
-    box(el, 800, 20, 140, 64, 'pr', 'File GLB', 'telefono e visori', 4);
-    box(el, 800, 125, 140, 80, 'pr', 'Blender', 'render e galleria', 4);
-    box(el, 800, 246, 140, 80, 'pr', 'SketchUp', 'modello dal vivo', 4);
-    arrow(el, 'M162 165 L211 165', 1);
-    arrow(el, 'M285 86 L285 121', 1);
-    arrow(el, 'M357 165 L406 165', 2);
-    arrow(el, 'M552 165 L601 165', 3);
-    arrow(el, 'M675 86 L675 121', 3);
+    const TOP = 12, MID = 112, BOT = 226;               // y delle tre righe
+    box(el, 0, MID, 80, 'me', 'Tu', 'chiedi in italiano');
+    box(el, 1, TOP, 66, 'ai', 'Skill', 'manuale di mestiere', 1);
+    box(el, 1, MID, 80, 'ai', 'Agente AI', 'quello che già usi', 1);
+    box(el, 2, MID, 80, 'ag', 'Server MCP', 'gli attrezzi', 2);
+    box(el, 3, TOP, 66, 'ag', 'Norme', 'DM 1975, DM 236', 3);
+    box(el, 3, MID, 80, 'ag', 'Motore', 'scheda e controlli', 3);
+    box(el, 4, TOP, 66, 'pr', 'File GLB', 'telefono e visori', 4);
+    box(el, 4, MID, 80, 'pr', 'Blender', 'render e galleria', 4);
+    box(el, 4, BOT, 80, 'pr', 'SketchUp', 'modello dal vivo', 4);
+    const cx = i => COL(i) + BW / 2, R = i => COL(i) + BW, L = i => COL(i);
+    arrow(el, `M${R(0) + 4} ${MID + 40} L${L(1) - 4} ${MID + 40}`, 1);
+    arrow(el, `M${cx(1)} ${TOP + 66 + 4} L${cx(1)} ${MID - 4}`, 1);
+    arrow(el, `M${R(1) + 4} ${MID + 40} L${L(2) - 4} ${MID + 40}`, 2);
+    arrow(el, `M${R(2) + 4} ${MID + 40} L${L(3) - 4} ${MID + 40}`, 3);
+    arrow(el, `M${cx(3)} ${TOP + 66 + 4} L${cx(3)} ${MID - 4}`, 3);
     // dal motore ai tre risultati
-    arrow(el, 'M747 150 L770 150 L770 52 L796 52', 4);
-    arrow(el, 'M747 165 L796 165', 4);
-    arrow(el, 'M747 180 L770 180 L770 286 L796 286', 4);
+    const bus = R(3) + 21;
+    arrow(el, `M${R(3) + 2} ${MID + 28} L${bus} ${MID + 28} L${bus} ${TOP + 33} L${L(4) - 4} ${TOP + 33}`, 4);
+    arrow(el, `M${R(3) + 2} ${MID + 40} L${L(4) - 4} ${MID + 40}`, 4);
+    arrow(el, `M${R(3) + 2} ${MID + 52} L${bus} ${MID + 52} L${bus} ${BOT + 40} L${L(4) - 4} ${BOT + 40}`, 4);
     // il rapporto torna all'agente
-    arrow(el, 'M870 330 L870 338 L285 338 L285 209', 5, true);
-    const lab = svg('text', { x: 580, y: 330, 'text-anchor': 'middle', 'data-step': 5, style: 'font-size:17px;font-weight:600;fill:#c4521f' }, el);
-    lab.textContent = 'rapporto di controllo';
+    const LOOP = BOT + 80 + 24;
+    arrow(el, `M${cx(4)} ${BOT + 80 + 2} L${cx(4)} ${LOOP} L${cx(1)} ${LOOP} L${cx(1)} ${MID + 80 + 6}`, 5, true);
+    svg('text', { x: (cx(1) + cx(4)) / 2, y: LOOP + 22, 'text-anchor': 'middle', 'data-step': 5, style: 'font-size:16px;font-weight:600;fill:#c4521f' }, el).textContent = 'rapporto di controllo';
+    // legenda dei colori
+    const LY = LOOP + 44;
+    [['ai', 'intelligenza artificiale', 250], ['ag', 'Agentic 3D', 520], ['pr', 'programmi 3D', 700]].forEach(([k, txt, x]) => {
+      svg('rect', { x, y: LY - 13, width: 20, height: 20, rx: 5, fill: C[k].f, stroke: C[k].s, 'stroke-width': 1.6 }, el);
+      svg('text', { x: x + 30, y: LY + 3, style: 'font-size:15px;fill:#6e6e73' }, el).textContent = txt;
+    });
   }
   function set(n) { const c = $('#flowcap'); if (c) c.textContent = CAP[Math.max(0, Math.min(CAP.length - 1, n))]; }
   return { build, set };
