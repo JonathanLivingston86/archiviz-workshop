@@ -11,7 +11,7 @@ Avere pronto per il workshop del 27 ottobre 2026 un deck web unico, usabile dal 
 
 ## Completato e verificato
 
-- [x] Deck di 32 slide con modalità presentatore e dispensa, quiz integrato, sei visual interattivi e codice QR. Prova: scorsa nel browser su server locale, slide 1, 4, 11-14, 16, 18, 20, 22, 24, 25, 27-29 e dispensa.
+- [x] Deck di 33 slide con modalità presentatore e dispensa, quiz integrato, sei visual interattivi e codice QR. Prova: scorsa nel browser su server locale, slide 1, 4, 11-14, 16, 18, 20, 22, 24, 25, 27-29 e dispensa.
 - [x] Kit del presentatore con scaletta, controlli, prompt del quiz e script per allineare le coppie.
 
 - [x] Pubblicato su GitHub (repository pubblico `archiviz-workshop`, Pages dal ramo `main`) il 26 ottobre 2026 con approvazione di Andrea. Prova: pagina, CSS, JS e immagini rispondono 200; le foto del quiz rispondono 404 come previsto; il codice QR scaricato dal sito si decodifica nell'indirizzo del sito.
@@ -22,6 +22,8 @@ Avere pronto per il workshop del 27 ottobre 2026 un deck web unico, usabile dal 
 - [x] Revisione del 26 ottobre 2026 sui commenti di Andrea: pulsante Copia fuori dal testo, camere 3 e 4 sistemate, sequenza da 3D a render senza sovrapposizioni, texture PBR da foto reale (parquet CC0 di Kurt Kaiser) con download, moodboard con arredi e modifica di immagine, sezione Agentic 3D rifatta (QR di download, cosa fa e a chi serve, flusso dinamico), slide su AI Act riscritte con tre angolazioni distinte e azioni concrete. Tolta la slide da 2D a 3D.
 
 - [x] Seconda revisione (26 ottobre 2026): PBR parte da Colore, tolta la slide su rugosità e rilievo (troppo tecnica), moodboard prompt 1 estrae la moodboard da un'immagine, flusso di Agentic 3D rifatto con riquadri più larghi e legenda dei colori.
+
+- [x] Terza revisione (26 ottobre 2026): slide Agentic 3D con titolo "Dal 2D al modello 3D", cenno sulla licenza e formati di ingresso (DXF, PDF, scansioni, foto, schizzi; DWG da salvare come DXF); nuova introduzione all'AI Act con date verificate su EUR-Lex (incluso l'art. 4 riscritto dal Regolamento 2026/1744); le tre domande ora parlano di cliente, dati personali (GDPR) e autorialità, non di immagini.
 
 ## Decisioni
 

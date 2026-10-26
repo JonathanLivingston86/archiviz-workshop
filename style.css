@@ -278,3 +278,18 @@ a.btn{border:0;background:var(--blue);color:#fff;border-radius:999px;padding:.6e
 .whorow .small{font-size:max(13px,1.45cqw)}
 .act p,.act .q,.act .do{font-size:max(12px,1.25cqw)}
 .act h3{font-size:max(17px,2.1cqw)}
+
+/* ---------- AI Act in breve e voci con sottotitolo ---------- */
+.item span small{display:block;font-weight:400;font-size:.78em;color:var(--mute);margin-top:.1em}
+.ai3{display:grid;grid-template-columns:repeat(3,1fr);gap:max(10px,1.8cqw)}
+.aiblock h3{color:var(--blue);margin-bottom:.25em}
+.aiblock p{font-size:max(13.5px,1.45cqw);line-height:1.4;color:var(--ink)}
+.tl{list-style:none;display:grid;grid-template-columns:repeat(5,1fr);gap:max(8px,1.2cqw);position:relative;padding-top:max(14px,1.6cqw);margin-top:max(2px,.4cqw)}
+.tl::before{content:"";position:absolute;left:0;right:0;top:max(4px,.45cqw);height:2px;background:var(--line)}
+.tl li{position:relative;display:grid;gap:.15em;align-content:start}
+.tl li::before{content:"";position:absolute;left:0;top:calc(-1 * max(14px,1.6cqw));width:max(10px,1.1cqw);height:max(10px,1.1cqw);border-radius:50%;background:var(--blue)}
+.tl li b{font-size:max(13.5px,1.5cqw)}
+.tl li span{font-size:max(12px,1.28cqw);color:var(--mute);line-height:1.35}
+@container (max-width:640px){.ai3{grid-template-columns:1fr}.tl{grid-template-columns:1fr;padding-top:0}.tl::before{display:none}.tl li::before{display:none}}
+
+.gray .whorow .panel{background:#fff}
