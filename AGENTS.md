@@ -22,7 +22,7 @@
 
 ## Cose da non fare
 
-- Non pubblicare in `quiz/` foto di rivista o loro copie generate: il `.gitignore` le esclude e non va indebolito.
+- Il quiz usa sei foto di rivista e le loro copie generate, pubblicate per scelta esplicita di Andrea (26 ottobre 2026). Non aggiungere altre foto di rivista al repository senza una nuova approvazione e non pubblicare gli originali in `materiali-privati/`.
 - Non inserire dati personali, credenziali o percorsi locali nel repository pubblico.
 - Non creare repository, fare push o modificare il sito live senza l'approvazione esplicita di Andrea.
 - Le norme citate (art. 13 e 25 della legge 132/2025, art. 50 dell'AI Act) vanno riverificate su fonti ufficiali prima di ogni aggiornamento.

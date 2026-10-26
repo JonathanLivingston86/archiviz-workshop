@@ -1,8 +1,8 @@
-# Foto del quiz: foto di rivista e loro copie generate, solo sul computer del presentatore
-quiz/*.jpg
-quiz/*.jpeg
-quiz/*.png
-quiz/*.webp
+# Quiz: sono pubbliche solo le coppie finali (0N-reale.jpg e 0N-ai.jpg), gia allineate
+quiz/*
+!quiz/0?-reale.jpg
+!quiz/0?-ai.jpg
+!quiz/LEGGIMI.md
 
 # Materiale personale
 materiali-privati/
