@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ArchiViz · Workshop</title>
+<meta name="description" content="Slide e prompt del workshop ArchiViz: render con l'AI per chi progetta.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="presenter">
+
+<main id="deck">
+
+<!-- 1 · LINK E QR -->
+<section class="slide" data-title="Segui da qui">
+  <div class="in linkslide">
+    <p class="eyebrow">ArchiViz · Workshop</p>
+    <h1>Segui da qui.</h1>
+    <p class="lead">Apri il link o inquadra il codice. Trovi le slide e tutti i prompt da copiare.</p>
+    <img class="qr" src="assets/qr.png" alt="Codice QR per aprire il deck">
+    <p class="url">jonathanlivingston86.github.io/archiviz-workshop</p>
+  </div>
+</section>
+
+<!-- 2 · TITOLO -->
+<section class="slide dark" data-title="ArchiViz">
+  <div class="in">
+    <p class="eyebrow">Workshop</p>
+    <h1 style="font-size:max(52px,11cqw);line-height:.98">ArchiViz</h1>
+    <p class="lead" style="font-size:max(20px,2.8cqw);color:#f5f5f7">Render con l'AI, dal disegno all'immagine.</p>
+    <p class="small mt">Andrea Lucarelli · ai.andrealucarelli.com</p>
+  </div>
+</section>
+
+<!-- 3 · QUIZ INTRO -->
+<section class="slide dark" data-po data-title="Real o AI?">
+  <div class="in">
+    <p class="eyebrow">Per cominciare</p>
+    <h1 style="font-size:max(52px,11cqw);line-height:.98">Real o AI?</h1>
+    <p class="lead" style="font-size:max(20px,2.6cqw);color:#f5f5f7">Due immagini. Una è una foto vera, l'altra è nata da un testo.</p>
+    <p class="small">Alzate la mano: A o B?</p>
+  </div>
+</section>
+
+<!-- 4-9 round quiz: generati da deck.js -->
+<div id="quizSlot"></div>
+
+<!-- 10 · QUIZ RISULTATO -->
+<section class="slide dark" data-po id="quizEnd" data-title="Fine gioco">
+  <div class="in center">
+    <p class="eyebrow">Fine gioco</p>
+    <div class="score" id="quizScore">0<span>/6</span></div>
+    <div class="divider"></div>
+    <h2 style="max-width:18em">Non importa quale immagine sia stata <span class="blue">generata dall'AI</span>.<br>Importa che ci hai dovuto pensare.</h2>
+    <p class="lead">Il confine è già scomparso. Questa era solo pratica.</p>
+    <div class="mt"><button class="btn ghost" id="quizReplay">Rigioca</button></div>
+  </div>
+</section>
+
+<!-- 11 · INQUADRATURE: GRIGLIA -->
+<section class="slide" data-title="Inquadrature cinematografiche fisse">
+  <div class="in dense">
+    <p class="eyebrow">01 · Inquadrature</p>
+    <h2>Inquadrature cinematografiche fisse</h2>
+    <div class="shots">
+      <figure class="shot"><img src="assets/img/inquadrature/01-campo-totale.jpg" alt="Campo totale" loading="lazy"><b>Campo totale</b><i>Establishing shot</i></figure>
+      <figure class="shot"><img src="assets/img/inquadrature/02-angolo-architettonico.jpg" alt="Angolo architettonico" loading="lazy"><b>Angolo architettonico</b><i>Two-point perspective</i></figure>
+      <figure class="shot"><img src="assets/img/inquadrature/03-attraverso-una-soglia.jpg" alt="Attraverso una soglia" loading="lazy"><b>Attraverso una soglia</b><i>Framed shot</i></figure>
+      <figure class="shot"><img src="assets/img/inquadrature/04-dall-alto.jpg" alt="Dall'alto" loading="lazy"><b>Dall'alto</b><i>High angle</i></figure>
+      <figure class="shot"><img src="assets/img/inquadrature/05-dettaglio-architettonico.jpg" alt="Dettaglio architettonico" loading="lazy"><b>Dettaglio architettonico</b><i>Close-up</i></figure>
+      <figure class="shot"><img src="assets/img/inquadrature/06-macro-materiale.jpg" alt="Macro materiale" loading="lazy"><b>Macro materiale</b><i>Macro texture</i></figure>
+    </div>
+  </div>
+  <div class="extra">
+    <h4>Per ricordarle</h4>
+    <p>Guida essenziale per fotografare e raccontare interni architettonici. I nomi in inglese servono nei prompt, sia da testo sia da immagine. Il campo totale si chiama anche hero shot, quando il soggetto principale domina la scena.</p>
+    <table>
+      <tr><th>Inquadratura</th><th>Cosa mostra</th><th>Come inquadrare</th><th>Luce</th></tr>
+      <tr><td>Campo totale</td><td>L'ambiente completo e la relazione tra arredi, aperture e percorsi.</td><td>Ripresa frontale o leggermente angolata, verticali dritte, spazio leggibile.</td><td>Morbida e bilanciata, per leggere volumi e profondità.</td></tr>
+      <tr><td>Angolo architettonico</td><td>Due pareti e la profondità dello spazio.</td><td>Camera vicino a un angolo, verticali dritte.</td><td>Laterale e naturale, per leggere texture e volumi.</td></tr>
+      <tr><td>Attraverso una soglia</td><td>Profondità, passaggio e relazione tra ambienti.</td><td>Porte, archi o quinte come cornice naturale.</td><td>Primo piano e fondo separati da livelli di luce chiari.</td></tr>
+      <tr><td>Dall'alto</td><td>Distribuzione degli arredi, proporzioni e flussi.</td><td>Camera sopra l'altezza degli occhi, inclinata verso il basso.</td><td>Uniforme e morbida, senza ombre invadenti.</td></tr>
+      <tr><td>Dettaglio architettonico</td><td>Materiali, finiture, giunti e dettagli costruttivi.</td><td>Il dettaglio isolato, composizione pulita, sfondo semplice.</td><td>Radente e laterale, per esaltare materia e rilievo.</td></tr>
+      <tr><td>Macro materiale</td><td>Texture, grana, venature, metalli, tessuti e superfici.</td><td>Un dettaglio preciso con profondità controllata.</td><td>Morbida, radente, senza punti troppo chiari.</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- 12 · INQUADRATURE: DOVE METTI LA CAMERA -->
+<section class="slide gray" data-title="Dove metti la camera">
+  <div class="in dense">
+    <p class="eyebrow">01 · Inquadrature</p>
+    <h2>Dove metti la camera.</h2>
+    <div class="cols2" style="grid-template-columns:1.35fr 1fr;align-items:center">
+      <div class="panel"><svg id="camvis" class="vis" viewBox="0 0 680 400" role="img" aria-label="Pianta di una stanza con sei posizioni di camera"></svg></div>
+      <div>
+        <div class="tabs" id="camtabs"></div>
+        <div style="margin-top:max(12px,1.6cqw)">
+          <p class="camname" id="camname">Campo totale</p>
+          <p class="small" id="camen">Establishing shot</p>
+          <p class="lead mt" id="camfocal" style="color:var(--ink)">24 mm</p>
+          <div class="prompt mt" style="position:relative"><pre id="camkw">eye-level camera, 24-35 mm, wide interior, straight verticals</pre><button class="copy" data-copy-from="camkw">Copia</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="extra">
+    <h4>Come leggerlo</h4>
+    <p>La pianta è vista dall'alto. Il cono blu è quello che la camera vede: più la focale è corta, più il cono si apre. Sotto trovi le parole da mettere nel prompt per quell'inquadratura.</p>
+  </div>
+</section>
+
+<!-- 13 · REGOLE E FOCALI -->
+<section class="slide" data-title="Cinque regole, quattro focali">
+  <div class="in">
+    <p class="eyebrow">01 · Inquadrature</p>
+    <h2>Cinque regole, quattro focali.</h2>
+    <div class="cols2" style="margin-top:max(8px,1cqw)">
+      <ol class="rules">
+        <li>Verticali dritte.</li>
+        <li>Niente deformazioni estreme.</li>
+        <li>Un soggetto e un punto focale.</li>
+        <li>Luce naturale e artificiale in equilibrio.</li>
+        <li>Ogni immagine racconta funzione, atmosfera e materia.</li>
+      </ol>
+      <div class="panel" style="padding:max(14px,2cqw)">
+        <table style="width:100%;border-collapse:collapse;font-size:var(--fs-p)">
+          <tr><td style="padding:.45em 0;font-weight:700;width:30%">16-24 mm</td><td class="small" style="color:var(--ink)">Ambienti piccoli. Con cautela.</td></tr>
+          <tr><td style="padding:.45em 0;font-weight:700;border-top:1px solid var(--line)">24-35 mm</td><td class="small" style="color:var(--ink);border-top:1px solid var(--line)">Il più versatile per gli interni.</td></tr>
+          <tr><td style="padding:.45em 0;font-weight:700;border-top:1px solid var(--line)">50 mm</td><td class="small" style="color:var(--ink);border-top:1px solid var(--line)">Dettagli e composizioni naturali.</td></tr>
+          <tr><td style="padding:.45em 0;font-weight:700;border-top:1px solid var(--line)">85-100 mm</td><td class="small" style="color:var(--ink);border-top:1px solid var(--line)">Materiali e finiture.</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="extra">
+    <h4>Una regola in più</h4>
+    <p>Quando rigeneri un'immagine, cambia una cosa sola alla volta: l'inquadratura, la luce o il materiale. Così capisci cosa ha funzionato.</p>
+  </div>
+</section>
+
+<!-- 14 · PRIMA PROVA NELLE CHAT -->
+<section class="slide gray" data-title="Prima prova, nelle chat">
+  <div class="in dense">
+    <p class="eyebrow">01 · Inquadrature</p>
+    <h2>Prima prova, nelle chat.</h2>
+    <p class="lead">ChatGPT e Gemini bastano per cominciare. Si parte da un testo, oppure da un'immagine.</p>
+    <div class="cols2">
+      <div class="prompt has-tag"><span class="tag">Da un testo</span><pre id="p-t2i">Eye-level interior photograph, [SHOT], [FOCAL] lens, straight verticals.
+Subject: a small living room with a linen sofa and an oak table.
+Light: soft natural daylight from a window on the left.
+Materials: lime plaster walls, oak floor, brushed brass.
+Style: calm, editorial, architecture magazine.
+Mandatory: realistic proportions, coherent shadows.
+Forbidden: people, text, watermarks, distorted lines.</pre><button class="copy" data-copy-from="p-t2i">Copia</button></div>
+      <div class="prompt has-tag"><span class="tag">Da un'immagine</span><pre id="p-i2i">Use the attached image as the base.
+Render it as an eye-level editorial interior photograph, [FOCAL] lens, straight verticals.
+Mandatory: keep the geometry, layout and every object exactly as they are.
+Light: soft natural daylight, realistic materials.
+Forbidden: adding or removing objects, text, watermarks.</pre><button class="copy" data-copy-from="p-i2i">Copia</button></div>
+    </div>
+    <p class="small">Obbligatorio e vietato: dì al modello cosa deve restare e cosa non deve comparire.</p>
+  </div>
+  <div class="extra">
+    <h4>Come usarli</h4>
+    <p>Sostituisci [SHOT] con il nome inglese dell'inquadratura (per esempio two-point perspective) e [FOCAL] con la focale, per esempio 28 mm. Gli altri dettagli si cambiano a piacere. Nel prompt da immagine, allega prima il disegno, il modello 3D o la foto di partenza.</p>
+  </div>
+</section>
+
+<!-- 15 · VIZMAKER -->
+<section class="slide dark" data-title="Da qui lavoriamo in VizMaker">
+  <div class="in">
+    <p class="eyebrow">Strumento</p>
+    <h2>Da qui lavoriamo in VizMaker.</h2>
+    <p class="lead">Un'app per computer che riunisce in un posto solo i modelli di immagine migliori: Nano Banana, Flux, Seedream, GPT. Ha una prova gratuita di 7 giorni.</p>
+    <p class="small">Lo uso e lo insegno perché funziona. Nessuna sponsorizzazione. Il metodo vale con qualunque strumento.</p>
+  </div>
+  <div class="extra">
+    <h4>Per sapere di più</h4>
+    <p>Sito ufficiale: <a href="https://www.vizmaker.com/" target="_blank" rel="noopener">vizmaker.com</a>. Condizioni, prezzi e modelli disponibili cambiano: controlla sempre la pagina aggiornata prima di decidere.</p>
+  </div>
+</section>
+
+<!-- 16 · INPAINTING -->
+<section class="slide" data-title="Cambi solo quello che selezioni" data-steps="2">
+  <div class="in dense">
+    <p class="eyebrow">02 · Inpainting</p>
+    <h2>Cambi solo quello che selezioni.</h2>
+    <div class="panel" style="padding:0;overflow:hidden">
+      <svg id="inpvis" class="vis" viewBox="0 0 640 330" role="img" aria-label="Una stanza in cui si seleziona il divano e lo si sostituisce">
+        <defs>
+          <pattern id="boucle" width="9" height="9" patternUnits="userSpaceOnUse"><rect width="9" height="9" fill="#b8603f"/><circle cx="2.5" cy="2.5" r="1.7" fill="#cf7b57"/><circle cx="7" cy="7" r="1.7" fill="#a04e2f"/><circle cx="7" cy="2" r="1.1" fill="#d68a66"/></pattern>
+          <mask id="outside"><rect width="640" height="330" fill="#fff"/><rect x="168" y="172" width="312" height="112" rx="26" fill="#000"/></mask>
+        </defs>
+        <rect width="640" height="330" fill="#efe9df"/>
+        <rect y="238" width="640" height="92" fill="#cdb89a"/>
+        <rect y="232" width="640" height="8" fill="#b9a384"/>
+        <rect x="44" y="40" width="150" height="120" rx="3" fill="#cfe3f2" stroke="#fff" stroke-width="8"/>
+        <path d="M119 40v120M44 100h150" stroke="#fff" stroke-width="5"/>
+        <rect x="236" y="230" width="230" height="38" rx="4" fill="#d9ccb4" opacity=".7"/>
+        <rect x="520" y="60" width="64" height="86" fill="#d8c8aa" stroke="#8a6f4b" stroke-width="4"/>
+        <rect x="530" y="70" width="44" height="66" fill="#b5654a" opacity=".85"/>
+        <g><rect x="540" y="214" width="8" height="52" fill="#4a4a4d"/><path d="M522 214l26-40 26 40z" fill="#f2e3b8"/></g>
+        <g><rect x="76" y="226" width="40" height="46" rx="6" fill="#8a6f4b"/><path d="M96 226c-24-26-34-52-14-80 4 26 12 40 14 80zM96 226c16-30 34-46 36-72-18 18-30 40-36 72zM96 226c-4-24 0-44 16-62-6 22-6 40-16 62z" fill="#5b8a5a"/></g>
+        <g data-until="2">
+          <rect x="176" y="176" width="296" height="104" rx="24" fill="#6f8f86"/>
+          <rect x="176" y="150" width="296" height="64" rx="22" fill="#7fa095"/>
+          <rect x="164" y="190" width="40" height="86" rx="18" fill="#648279"/><rect x="444" y="190" width="40" height="86" rx="18" fill="#648279"/>
+          <rect x="206" y="200" width="236" height="62" rx="10" fill="#86a79c"/>
+          <rect x="222" y="158" width="60" height="44" rx="12" fill="#e7dcc6"/>
+        </g>
+        <g data-step="2" class="on-step">
+          <rect x="176" y="176" width="296" height="104" rx="24" fill="url(#boucle)"/>
+          <rect x="176" y="150" width="296" height="64" rx="22" fill="url(#boucle)"/>
+          <rect x="164" y="190" width="40" height="86" rx="18" fill="url(#boucle)"/><rect x="444" y="190" width="40" height="86" rx="18" fill="url(#boucle)"/>
+          <rect x="206" y="200" width="236" height="62" rx="10" fill="#c8704c"/>
+          <rect x="222" y="158" width="60" height="44" rx="12" fill="#e7dcc6"/>
+        </g>
+        <g data-step="1" data-until="2">
+          <rect width="640" height="330" fill="rgba(0,0,0,.42)" mask="url(#outside)"/>
+          <rect x="168" y="172" width="312" height="112" rx="26" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="9 7"><animate attributeName="stroke-dashoffset" from="0" to="-32" dur="1.2s" repeatCount="indefinite"/></rect>
+        </g>
+      </svg>
+    </div>
+    <div class="row" style="align-items:baseline;justify-content:space-between;gap:max(12px,2cqw)">
+      <p class="lead" id="inpcap" style="color:var(--ink)">Un'immagine che funziona quasi.</p>
+      <p class="small" style="white-space:nowrap">Premi la freccia per andare avanti</p>
+    </div>
+  </div>
+  <div class="extra">
+    <h4>In tre passi</h4>
+    <ul><li>L'immagine di partenza va bene quasi tutta.</li><li>Selezioni solo la parte da cambiare, qui il divano.</li><li>Descrivi il cambiamento. Il resto dell'immagine non si tocca.</li></ul>
+  </div>
+</section>
+
+<!-- 17 · INPAINTING: PROMPT -->
+<section class="slide gray" data-title="Inpainting: il prompt">
+  <div class="in">
+    <p class="eyebrow">02 · Inpainting</p>
+    <h2>Il prompt giusto.</h2>
+    <div class="prompt has-tag"><span class="tag">Sostituisci un oggetto</span><pre id="p-inp">Replace only the selected area with a terracotta bouclé sofa, same size and same position.
+Match the existing light direction and shadows.
+Mandatory: keep everything outside the selection unchanged.
+Forbidden: new objects, text, changes outside the selection.</pre><button class="copy" data-copy-from="p-inp">Copia</button></div>
+    <ol class="rules mt">
+      <li>Seleziona un po' oltre il bordo dell'oggetto.</li>
+      <li>Un cambiamento alla volta.</li>
+      <li>Descrivi anche luce e ombre.</li>
+    </ol>
+  </div>
+  <div class="extra">
+    <h4>Cosa si può fare</h4>
+    <p>Cambiare un materiale, togliere un oggetto, aggiungere arredi o persone, correggere un dettaglio che non convince. Per togliere qualcosa usa: Remove the selected object and fill the area with the surrounding wall and floor.</p>
+  </div>
+</section>
+
+<!-- 18 · PBR -->
+<section class="slide dark" data-title="Una superficie reagisce alla luce">
+  <div class="in dense">
+    <p class="eyebrow">03 · Texture PBR</p>
+    <h2>Una superficie reagisce alla luce.</h2>
+    <p class="lead">PBR sta per rendering basato sulla fisica. Ogni materiale ha più mappe: colore, rugosità, rilievo. Muovi la luce.</p>
+    <div class="pbrbox"><canvas id="pbrcv" aria-label="Superficie con luce mobile"></canvas></div>
+    <div class="tabs" id="pbrtabs"></div>
+  </div>
+  <div class="extra">
+    <h4>Le mappe</h4>
+    <ul><li>Colore: l'aspetto del materiale senza luce.</li><li>Rugosità: dove è lucido e dove è opaco.</li><li>Rilievo: le piccole sporgenze e gli incavi, come le fughe tra le piastrelle.</li></ul>
+    <p>Il risultato è l'insieme delle mappe con una luce sopra. Muovi il mouse o il dito sull'immagine per cambiare la direzione.</p>
+  </div>
+</section>
+
+<!-- 19 · PBR PROMPT -->
+<section class="slide gray" data-title="Texture da un prompt">
+  <div class="in">
+    <p class="eyebrow">03 · Texture PBR</p>
+    <h2>Texture da un prompt.</h2>
+    <div class="prompt has-tag"><span class="tag">Texture ripetibile</span><pre id="p-pbr">Seamless tileable texture of aged herringbone oak parquet, top-down view, flat even lighting.
+Mandatory: no perspective, no shadows, square 1:1, high detail, consistent scale.
+Forbidden: objects, text, vignette, visible seams.</pre><button class="copy" data-copy-from="p-pbr">Copia</button></div>
+    <ol class="rules mt">
+      <li>L'AI ti dà il colore. Rugosità e rilievo si ricavano dopo, con un programma di texture.</li>
+      <li>Ripeti la texture su una griglia 3 per 3: se si vede il raccordo, rigenera.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- 20 · MOODBOARD -->
+<section class="slide" data-title="Dalle immagini al linguaggio">
+  <div class="in dense">
+    <p class="eyebrow">04 · Moodboard</p>
+    <h2>Dalle immagini al linguaggio.</h2>
+    <p class="lead">Scegli fino a cinque materiali. Il prompt si scrive da solo.</p>
+    <div class="sw" id="moodsw"></div>
+    <div class="cols2" style="grid-template-columns:1.1fr 1fr;align-items:stretch">
+      <div class="board" id="moodboard"></div>
+      <div class="prompt has-tag" style="display:flex;flex-direction:column"><span class="tag">Descrizione dello stile</span><pre id="moodout"></pre><button class="copy" data-copy-from="moodout">Copia</button></div>
+    </div>
+  </div>
+  <div class="extra">
+    <h4>Perché serve</h4>
+    <p>Un moodboard mette d'accordo te, il cliente e il modello sullo stesso linguaggio. Parole precise e codici colore danno risultati più coerenti di aggettivi come bello o elegante.</p>
+  </div>
+</section>
+
+<!-- 21 · MOODBOARD PROMPT -->
+<section class="slide gray" data-title="Moodboard in due passaggi">
+  <div class="in dense">
+    <p class="eyebrow">04 · Moodboard</p>
+    <h2>Moodboard in due passaggi.</h2>
+    <div class="cols2">
+      <div class="prompt has-tag"><span class="tag">1 · Dalle immagini al testo</span><pre id="p-m1">Look at these reference images as a moodboard.
+Describe in English: the palette with hex codes, the main materials, the quality of light, and the mood in five keywords.
+Then write one reusable prompt that captures this style.
+Forbidden: generic words like beautiful or elegant.</pre><button class="copy" data-copy-from="p-m1">Copia</button></div>
+      <div class="prompt has-tag"><span class="tag">2 · Dal testo alle immagini</span><pre id="p-m2">Use this style description as the only reference: [PASTE THE DESCRIPTION].
+Generate an eye-level interior photograph of [ROOM], 28 mm, straight verticals.
+Mandatory: keep the palette and the materials.
+Forbidden: any color or material not in the description.</pre><button class="copy" data-copy-from="p-m2">Copia</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- 22 · UPSCALE -->
+<section class="slide dark" data-title="Più pixel, nuovi dettagli">
+  <div class="in dense">
+    <p class="eyebrow">05 · Upscale</p>
+    <h2>Più pixel, nuovi dettagli.</h2>
+    <p class="lead">L'upscale aumenta la risoluzione. Il modello inventa i dettagli che mancano.</p>
+    <div class="cmp" id="cmp"><canvas id="cmpLow" width="1000" height="460"></canvas><div class="top"><canvas id="cmpHigh" width="1000" height="460"></canvas></div><div class="bar"></div><span class="tg l">PRIMA</span><span class="tg r">DOPO</span></div>
+    <p class="xs">Illustrazione. Trascina la barra.</p>
+  </div>
+</section>
+
+<!-- 23 · UPSCALE QUANDO -->
+<section class="slide" data-title="Quando fare l'upscale">
+  <div class="in">
+    <p class="eyebrow">05 · Upscale</p>
+    <h2>Quando farlo.</h2>
+    <ol class="rules mt">
+      <li>Alla fine, su un'immagine già approvata.</li>
+      <li>Prima di stampare o di mandarla al cliente.</li>
+      <li>Poi controlla linee, scritte e texture: i dettagli inventati possono sbagliare.</li>
+    </ol>
+  </div>
+  <div class="extra">
+    <h4>Nota</h4>
+    <p>Un upscale ricostruisce i dettagli, non li recupera. Se un'immagine nasce con un errore di geometria, l'upscale lo rende più nitido. Correggi prima, ingrandisci dopo. VizMaker dichiara una generazione nativa in 4K e un upscale fino a 8K.</p>
+  </div>
+</section>
+
+<!-- 24 · DAL 3D AL RENDER -->
+<section class="slide dark" data-title="Dal modello al render" data-steps="4">
+  <div class="in dense">
+    <p class="eyebrow">06 · Da 3D a render</p>
+    <h2>Dal modello al render.</h2>
+    <div class="stack">
+      <figure><img src="assets/img/dal-3d/1-bordi.jpg" alt="Modello 3D con i bordi"><figcaption>Il modello 3D, con i bordi. <span>Il punto di partenza.</span></figcaption></figure>
+      <figure data-step="1"><img src="assets/img/dal-3d/2-occlusione.jpg" alt="Occlusione ambientale"><figcaption>Senza bordi, con l'occlusione ambientale. <span>Le ombre dove la luce non arriva.</span></figcaption></figure>
+      <figure data-step="2"><img src="assets/img/dal-3d/3-render.jpg" alt="Render"><figcaption>Il render. <span>Stessa scena, materiali e luce veri.</span></figcaption></figure>
+      <figure data-step="3"><img src="assets/img/dal-3d/4-teleobiettivo.jpg" alt="Altra ottica"><figcaption>Altra ottica. <span>Stessa scena, un teleobiettivo.</span></figcaption></figure>
+      <figure data-step="4"><img src="assets/img/dal-3d/5-composizione.jpg" alt="Composizione con persona"><figcaption>Una persona, e la scena vive. <span>Composizione finale.</span></figcaption></figure>
+    </div>
+  </div>
+  <div class="extra">
+    <h4>Prompt del passaggio 3</h4>
+    <div class="prompt has-tag" style="position:relative"><pre id="p-3d">Render this clay model photorealistically.
+Mandatory: do not modify the geometry, keep the camera, the layout and every object in place.
+Apply realistic materials and warm sunlight from the left.
+Forbidden: new furniture, text, watermarks.</pre><button class="copy" data-copy-from="p-3d">Copia</button></div>
+  </div>
+</section>
+
+<!-- 25 · DA 2D A 3D -->
+<section class="slide gray" data-title="Dalla pianta al volume">
+  <div class="in dense">
+    <p class="eyebrow">07 · Da 2D a 3D</p>
+    <h2>Dalla pianta al volume.</h2>
+    <p class="lead">Trascina l'altezza. Un disegno piatto diventa uno spazio.</p>
+    <div class="panel"><svg id="extvis" class="vis" viewBox="0 0 640 330" role="img" aria-label="Una pianta che si trasforma in un modello 3D"></svg></div>
+    <div class="row" style="align-items:center;gap:max(12px,2cqw)"><span class="small">Pianta</span><input type="range" id="extrange" min="0" max="100" value="0" style="flex:1;accent-color:#0071e3"><span class="small">Modello 3D</span></div>
+  </div>
+  <div class="extra">
+    <h4>Nella pratica</h4>
+    <p>Da uno schizzo, da una pianta o da un'immagine si può arrivare a un modello 3D, da usare come base per nuovi render. Il punto di partenza decide la qualità: disegni puliti e quotati danno modelli affidabili.</p>
+  </div>
+</section>
+
+<!-- 26 · AGENTIC 3D -->
+<section class="slide dark" data-title="Un agente che modella con te">
+  <div class="in">
+    <p class="eyebrow">08 · Agentic 3D</p>
+    <h2>Un agente che modella con te.</h2>
+    <p class="lead">Gli dai un brief, una pianta o uno schizzo. Scrive la scheda del progetto, costruisce il modello in SketchUp e controlla le norme.</p>
+  </div>
+</section>
+
+<!-- 27 · AGENTIC FLUSSO -->
+<section class="slide" data-title="Come funziona" data-steps="5">
+  <div class="in dense">
+    <p class="eyebrow">08 · Agentic 3D</p>
+    <h2>Come funziona.</h2>
+    <div class="panel"><svg id="flowvis" class="vis" viewBox="0 0 900 300" role="img" aria-label="Flusso di Agentic 3D"></svg></div>
+    <p class="small">Premi la freccia per seguire il percorso.</p>
+  </div>
+  <div class="extra">
+    <h4>Il percorso</h4>
+    <ul><li>Brief, pianta (anche in DXF) o schizzo: il punto di partenza.</li><li>L'agente scrive la scheda del progetto in un formato semplice.</li><li>Il motore costruisce la scena e controlla geometria e norme.</li><li>SketchUp mostra il modello dal vivo e scrive un rapporto.</li><li>L'agente rilegge il rapporto e corregge.</li></ul>
+  </div>
+</section>
+
+<!-- 28 · BYOA -->
+<section class="slide gray" data-title="Porta il tuo agente">
+  <div class="in">
+    <p class="eyebrow">08 · Agentic 3D</p>
+    <h2>Porta il tuo agente.</h2>
+    <div class="cols3" style="margin-top:max(8px,1cqw)">
+      <div class="panel"><h3>BYOA</h3><p class="small mt">Bring Your Own Agent: porta il tuo agente. Funziona con quello che già usi, per esempio Claude, Codex, Gemini, Cursor, Copilot o OpenCode.</p></div>
+      <div class="panel"><h3>Norme dentro</h3><p class="small mt">Le regole italiane ed europee stanno dentro il motore, ciascuna con la sua fonte e l'articolo.</p></div>
+      <div class="panel"><h3>L'ultima parola</h3><p class="small mt">Il controllo aiuta. La firma e la responsabilità restano del tecnico abilitato.</p></div>
+    </div>
+  </div>
+  <div class="extra">
+    <h4>Cosa serve</h4>
+    <p>Windows 10 o 11, oppure macOS 13 o successivo. SketchUp desktop 2021 o più recente. Un agente a tua scelta. Blender solo se vuoi i render.</p>
+  </div>
+</section>
+
+<!-- 29 · AI ACT -->
+<section class="slide dark" data-title="Tre cose a cui forse non hai pensato" data-steps="3">
+  <div class="in dense">
+    <p class="eyebrow">09 · AI Act e dintorni</p>
+    <h2>Tre cose a cui forse non hai pensato.</h2>
+    <div class="cols3" style="align-items:stretch">
+      <div class="act" data-step="1"><span class="n">1</span><h3>Va detto al cliente.</h3><p>Dal 10 ottobre 2025, chi esercita una professione intellettuale in Italia deve spiegare al cliente, con parole semplici, quali sistemi di AI usa. Legge 132/2025, art. 13.</p><p class="q">Un render fatto con l'AI è solo uno strumento di supporto? Dove finisce il supporto?</p></div>
+      <div class="act" data-step="2"><span class="n">2</span><h3>Di chi è quel render?</h3><p>Il diritto d'autore protegge le opere dell'ingegno umano, anche se fatte con l'AI, purché siano il risultato del lavoro intellettuale dell'autore. Legge 132/2025, art. 25.</p><p class="q">Bastano due prompt? E cosa ha comprato il cliente che ha pagato?</p></div>
+      <div class="act" data-step="3"><span class="n">3</span><h3>Sembra vero? Allora dillo.</h3><p>Dal 2 agosto 2026 le immagini generate che somigliano a luoghi, oggetti o persone reali e sembrano autentiche vanno dichiarate. Per le opere creative l'obbligo è più leggero. AI Act, art. 50.</p><p class="q">Il render di un edificio non ancora costruito, in un luogo vero, è una finzione o un inganno?</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 30 · AI ACT CHIUSURA -->
+<section class="slide" data-title="Una slide non basta">
+  <div class="in">
+    <p class="eyebrow">09 · AI Act e dintorni</p>
+    <h2>Una slide non basta per decidere.</h2>
+    <p class="lead">Le norme cambiano e hanno punti ancora da chiarire. Prima di scrivere una clausola nel tuo disciplinare d'incarico, controlla le fonti.</p>
+    <p class="lead mt" style="color:var(--ink);font-weight:600">L'AI non è uno scherzo. Se vuoi ragionarci sul tuo studio, scrivimi.</p>
+  </div>
+  <div class="extra">
+    <h4>Fonti consultate</h4>
+    <ul>
+      <li>Regolamento (UE) 2024/1689 (AI Act), art. 50, obblighi di trasparenza.</li>
+      <li>Legge 23 settembre 2025, n. 132, art. 13 (professioni intellettuali) e art. 25 (diritto d'autore), in vigore dal 10 ottobre 2025.</li>
+    </ul>
+    <p>Le date di applicazione dell'AI Act sono state modificate di recente dal pacchetto di semplificazione europeo (Digital Omnibus). Verifica sempre il calendario aggiornato su fonti ufficiali. Questo materiale non è un parere legale.</p>
+  </div>
+</section>
+
+<!-- 31 · PROSSIMI PASSI -->
+<section class="slide gray" data-title="Tre cose da fare questa settimana" data-steps="3">
+  <div class="in">
+    <p class="eyebrow">Prossimi passi</p>
+    <h2>Tre cose da fare questa settimana.</h2>
+    <ol class="rules mt">
+      <li data-step="1">Prendi un tuo progetto e prova le sei inquadrature.</li>
+      <li data-step="2">Costruisci un moodboard e rigenera la stessa scena.</li>
+      <li data-step="3">Scrivi due righe sull'uso dell'AI nel tuo disciplinare d'incarico.</li>
+    </ol>
+    <p class="small mt">Scegli quella che ti sembra più alla portata. Una sola, ma falla davvero.</p>
+  </div>
+</section>
+
+<!-- 32 · CONTATTI -->
+<section class="slide dark" data-title="Grazie">
+  <div class="in linkslide">
+    <h1>Grazie.</h1>
+    <p class="lead">Domande, dubbi, progetti da guardare insieme.</p>
+    <img class="qr" src="assets/qr.png" alt="Codice QR del deck">
+    <p class="url">jonathanlivingston86.github.io/archiviz-workshop</p>
+    <p class="small">Andrea Lucarelli · ai.andrealucarelli.com</p>
+  </div>
+</section>
+
+</main>
+
+<div class="ui" id="ui">
+  <span class="brand">ArchiViz · Dispensa</span>
+  <div class="grp">
+    <button id="bIndex" title="Indice (G)">Indice</button>
+    <button id="bMode" title="Cambia modalità (H)">Dispensa</button>
+    <button id="bFs" title="Schermo intero (F)">Schermo intero</button>
+    <button id="bPrint" title="Stampa o salva in PDF">Stampa / PDF</button>
+  </div>
+</div>
+<div class="progress" id="progress"></div>
+<div class="hint">Frecce per muoverti · G indice · H dispensa · F schermo intero</div>
+<div class="overlay" id="overlay"><h4>Indice</h4><ol id="overlayList"></ol></div>
+
+<script src="deck.js"></script>
+</body>
+</html>

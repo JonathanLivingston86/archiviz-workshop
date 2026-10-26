@@ -1,0 +1,20 @@
+# Foto del quiz: foto di rivista e loro copie generate, solo sul computer del presentatore
+quiz/*.jpg
+quiz/*.jpeg
+quiz/*.png
+quiz/*.webp
+
+# Materiale personale
+materiali-privati/
+kit-presentatore/
+
+# Segreti, sistema e temporanei
+.env
+.env.*
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log
+.tmp/
+tmp/
